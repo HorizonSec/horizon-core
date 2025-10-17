@@ -1,11 +1,11 @@
 # Folder Structure
 
-This document describes the organization and structure of the Horizon Template repository. Understanding this structure will help you navigate the codebase and know where to place new files.
+This document describes the organization and structure of the Horizon Core repository. Understanding this structure will help you navigate the codebase and know where to place new files.
 
 ## Repository Structure
 
 ```
-horizon-template/
+horizon-core/
 ├── .github/                          # GitHub-specific configurations
 │   ├── ISSUE_TEMPLATE/              # Issue templates for bug reports and feature requests
 │   │   ├── bug_report.md           # Template for reporting bugs
@@ -13,13 +13,33 @@ horizon-template/
 │   ├── workflows/                   # GitHub Actions workflows
 │   │   └── ci.yml                  # Continuous integration workflow
 │   └── PULL_REQUEST_TEMPLATE.md    # Template for pull requests
+├── config/                          # Configuration files
+│   └── README.md                   # Configuration documentation
+├── docs/                            # Additional documentation
+│   └── README.md                   # Documentation index
+├── horizon_core/                    # Main Python package
+│   ├── __init__.py                 # Package initialization
+│   ├── cli_framework.py            # Standardized CLI utilities
+│   ├── logging.py                  # Logging utilities
+│   ├── sarif.py                    # SARIF schema definitions
+│   └── config.py                   # Configuration loader
+├── tests/                           # Unit and integration tests
+│   ├── __init__.py
+│   ├── test_cli_framework.py
+│   ├── test_logging.py
+│   ├── test_sarif.py
+│   └── test_config.py
+├── .gitignore                       # Git ignore patterns
 ├── CODE_OF_CONDUCT.md               # Community code of conduct
 ├── CONTRIBUTING.md                  # Contribution guidelines
+├── Dockerfile                       # Docker container for the library
 ├── FOLDER_STRUCTURE.md              # This file - describes repository structure
 ├── LICENSE                          # MIT License
+├── pyproject.toml                   # Python project configuration (Hatch)
 ├── README.md                        # Main project documentation
+├── requirements.txt                 # Python dependencies
 ├── SECURITY.md                      # Security policy and vulnerability reporting
-└── .gitignore                       # Git ignore patterns
+└── setup.py                         # Package configuration (backward compatibility)
 ```
 
 ## Directory Descriptions
@@ -78,61 +98,61 @@ Contains all GitHub-specific configuration files:
   - Temporary files
   - Environment variables
 
+### Source Code Directories
+
+#### `horizon_core/`
+The main Python package containing shared utilities and framework components:
+
+- **`__init__.py`**: Package initialization and public API exports
+- **`cli_framework.py`**: Standardized CLI utilities for building command-line tools
+  - `CLI` class for application setup
+  - `Command` base class for implementing commands
+  - Argument parsing and command execution
+- **`logging.py`**: Logging utilities for consistent logging across tools
+  - `setup_logging()` function for configuration
+  - `get_logger()` for obtaining logger instances
+  - `LoggerMixin` for adding logging to classes
+- **`sarif.py`**: SARIF schema definitions for security findings
+  - Data classes for SARIF format
+  - Utilities for creating and serializing SARIF reports
+- **`config.py`**: Configuration loader supporting multiple formats
+  - `Config` class for managing configuration
+  - Support for JSON and YAML files
+  - Environment variable overrides
+
+#### `tests/`
+Contains all test files for the project:
+- `test_cli_framework.py`: Tests for CLI framework
+- `test_logging.py`: Tests for logging utilities
+- `test_sarif.py`: Tests for SARIF functionality
+- `test_config.py`: Tests for configuration management
+
+Tests use pytest and aim for comprehensive coverage of all modules.
+
+#### `docs/`
+Contains additional documentation beyond the root-level markdown files:
+- API documentation
+- User guides
+- Architecture documentation
+- Development guides
+
+See `docs/README.md` for the documentation index.
+
+#### `config/`
+Contains configuration files for different environments and tools:
+- Development environment configuration
+- Staging environment configuration
+- Production environment configuration
+- Tool-specific configurations
+
+See `config/README.md` for configuration documentation.
+
 ## File Naming Conventions
 
 - **Markdown files**: Use `UPPERCASE.md` for root-level documentation (e.g., `README.md`, `CONTRIBUTING.md`)
 - **Template files**: Use `lowercase_with_underscores.md` (e.g., `bug_report.md`, `feature_request.md`)
 - **Configuration files**: Follow the convention of the tool (e.g., `.gitignore`, `ci.yml`)
-
-## When Using This Template
-
-When you use this template for a new project, you may want to add:
-
-### Source Code Directory
-
-```
-src/                    # Source code directory
-├── components/        # Reusable components
-├── utils/            # Utility functions
-├── services/         # Service layer
-└── ...               # Other source code
-```
-
-### Tests Directory
-
-```
-tests/                 # Test files
-├── unit/             # Unit tests
-├── integration/      # Integration tests
-└── e2e/              # End-to-end tests
-```
-
-### Documentation Directory
-
-```
-docs/                  # Additional documentation
-├── api/              # API documentation
-├── guides/           # User guides
-└── architecture/     # Architecture documentation
-```
-
-### Build and Distribution
-
-```
-dist/                  # Built/compiled files (should be in .gitignore)
-build/                 # Build output (should be in .gitignore)
-public/               # Public assets
-assets/               # Static assets
-```
-
-### Configuration
-
-```
-config/               # Configuration files
-├── development/      # Development environment config
-├── staging/         # Staging environment config
-└── production/      # Production environment config
-```
+- **Source code**: Follow language-specific conventions (e.g., camelCase, snake_case)
 
 ## Best Practices
 
@@ -145,23 +165,13 @@ config/               # Configuration files
 
 ## Adding New Directories
 
-When adding new directories to your project:
+When adding new directories to the project:
 
 1. Create the directory with a clear, descriptive name
 2. Add a `README.md` in the directory explaining its purpose
 3. Update this `FOLDER_STRUCTURE.md` file with the new directory
 4. Update `.gitignore` if the directory contains generated files
 5. Document any special conventions for files in that directory
-
-## Project-Specific Customization
-
-This is a template repository. When using it for a specific project:
-
-- [ ] Customize the folder structure to match your project needs
-- [ ] Update this document to reflect your actual structure
-- [ ] Remove sections that don't apply to your project
-- [ ] Add project-specific directories and documentation
-- [ ] Update the README.md with project-specific information
 
 ## Questions?
 

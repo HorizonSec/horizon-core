@@ -61,6 +61,14 @@ ENV/
 env/
 .venv
 
+# Hatch
+.hatch/
+*.egg-info/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+
 # Java
 *.class
 *.jar
