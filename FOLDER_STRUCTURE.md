@@ -1,11 +1,11 @@
 # Folder Structure
 
-This document describes the organization and structure of the Horizon Template repository. Understanding this structure will help you navigate the codebase and know where to place new files.
+This document describes the organization and structure of the Horizon Core repository. Understanding this structure will help you navigate the codebase and know where to place new files.
 
 ## Repository Structure
 
 ```
-horizon-template/
+horizon-core/
 ├── .github/                          # GitHub-specific configurations
 │   ├── ISSUE_TEMPLATE/              # Issue templates for bug reports and feature requests
 │   │   ├── bug_report.md           # Template for reporting bugs
@@ -13,6 +13,14 @@ horizon-template/
 │   ├── workflows/                   # GitHub Actions workflows
 │   │   └── ci.yml                  # Continuous integration workflow
 │   └── PULL_REQUEST_TEMPLATE.md    # Template for pull requests
+├── config/                          # Configuration files
+│   └── README.md                   # Configuration documentation
+├── docs/                            # Additional documentation
+│   └── README.md                   # Documentation index
+├── src/                             # Source code directory
+│   └── README.md                   # Source code documentation
+├── tests/                           # Test files
+│   └── README.md                   # Testing documentation
 ├── CODE_OF_CONDUCT.md               # Community code of conduct
 ├── CONTRIBUTING.md                  # Contribution guidelines
 ├── FOLDER_STRUCTURE.md              # This file - describes repository structure
@@ -78,61 +86,50 @@ Contains all GitHub-specific configuration files:
   - Temporary files
   - Environment variables
 
+### Source Code Directories
+
+#### `src/`
+Contains the source code for Horizon Core. This directory will include:
+- Core components and modules
+- Utility functions and helpers
+- Service implementations
+- Business logic
+
+See `src/README.md` for detailed information about the source code organization.
+
+#### `tests/`
+Contains all test files for the project:
+- Unit tests
+- Integration tests
+- End-to-end tests
+- Test utilities and fixtures
+
+See `tests/README.md` for detailed information about testing.
+
+#### `docs/`
+Contains additional documentation beyond the root-level markdown files:
+- API documentation
+- User guides
+- Architecture documentation
+- Development guides
+
+See `docs/README.md` for the documentation index.
+
+#### `config/`
+Contains configuration files for different environments and tools:
+- Development environment configuration
+- Staging environment configuration
+- Production environment configuration
+- Tool-specific configurations
+
+See `config/README.md` for configuration documentation.
+
 ## File Naming Conventions
 
 - **Markdown files**: Use `UPPERCASE.md` for root-level documentation (e.g., `README.md`, `CONTRIBUTING.md`)
 - **Template files**: Use `lowercase_with_underscores.md` (e.g., `bug_report.md`, `feature_request.md`)
 - **Configuration files**: Follow the convention of the tool (e.g., `.gitignore`, `ci.yml`)
-
-## When Using This Template
-
-When you use this template for a new project, you may want to add:
-
-### Source Code Directory
-
-```
-src/                    # Source code directory
-├── components/        # Reusable components
-├── utils/            # Utility functions
-├── services/         # Service layer
-└── ...               # Other source code
-```
-
-### Tests Directory
-
-```
-tests/                 # Test files
-├── unit/             # Unit tests
-├── integration/      # Integration tests
-└── e2e/              # End-to-end tests
-```
-
-### Documentation Directory
-
-```
-docs/                  # Additional documentation
-├── api/              # API documentation
-├── guides/           # User guides
-└── architecture/     # Architecture documentation
-```
-
-### Build and Distribution
-
-```
-dist/                  # Built/compiled files (should be in .gitignore)
-build/                 # Build output (should be in .gitignore)
-public/               # Public assets
-assets/               # Static assets
-```
-
-### Configuration
-
-```
-config/               # Configuration files
-├── development/      # Development environment config
-├── staging/         # Staging environment config
-└── production/      # Production environment config
-```
+- **Source code**: Follow language-specific conventions (e.g., camelCase, snake_case)
 
 ## Best Practices
 
@@ -145,23 +142,13 @@ config/               # Configuration files
 
 ## Adding New Directories
 
-When adding new directories to your project:
+When adding new directories to the project:
 
 1. Create the directory with a clear, descriptive name
 2. Add a `README.md` in the directory explaining its purpose
 3. Update this `FOLDER_STRUCTURE.md` file with the new directory
 4. Update `.gitignore` if the directory contains generated files
 5. Document any special conventions for files in that directory
-
-## Project-Specific Customization
-
-This is a template repository. When using it for a specific project:
-
-- [ ] Customize the folder structure to match your project needs
-- [ ] Update this document to reflect your actual structure
-- [ ] Remove sections that don't apply to your project
-- [ ] Add project-specific directories and documentation
-- [ ] Update the README.md with project-specific information
 
 ## Questions?
 

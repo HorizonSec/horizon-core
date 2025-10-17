@@ -1,13 +1,13 @@
-# Horizon Template
+# Horizon Core
 
-[![CI](https://github.com/HorizonSec/horizon-template/workflows/CI/badge.svg)](https://github.com/HorizonSec/horizon-template/actions)
+[![CI](https://github.com/HorizonSec/horizon-core/workflows/CI/badge.svg)](https://github.com/HorizonSec/horizon-core/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
-Welcome to the **Horizon Template** repository! This is a template repository for the HorizonSec organization, designed to help you quickly bootstrap new projects with best practices, standard configurations, and essential documentation.
+Welcome to the **Horizon Core** repository! This is the core library and framework for the HorizonSec organization, providing fundamental components, utilities, and services for building secure applications.
 
-This template includes:
+This repository includes:
 - Comprehensive documentation (README, CONTRIBUTING, CODE_OF_CONDUCT)
 - Issue and pull request templates
 - GitHub Actions CI workflow
@@ -19,42 +19,41 @@ This template includes:
 
 ### Prerequisites
 
-Before using this template, ensure you have:
+Before using Horizon Core, ensure you have:
 - Git installed on your local machine
 - A GitHub account with access to HorizonSec organization
 - Basic understanding of Git and GitHub workflows
 
 ### Installation
 
-1. **Use this template** by clicking the "Use this template" button at the top of this repository
-2. **Clone your new repository**:
+1. **Clone the repository**:
    ```bash
-   git clone https://github.com/HorizonSec/your-new-repo.git
-   cd your-new-repo
+   git clone https://github.com/HorizonSec/horizon-core.git
+   cd horizon-core
    ```
-3. **Customize the template**:
-   - Update this README.md with your project-specific information
-   - Modify the LICENSE if needed
-   - Adjust the CI workflow in `.github/workflows/ci.yml` for your project's needs
-   - Update SECURITY.md with your security contact information
+2. **Install dependencies** (when applicable):
+   ```bash
+   # Instructions will be added as the project develops
+   ```
+3. **Build the project** (when applicable):
+   ```bash
+   # Instructions will be added as the project develops
+   ```
 
 ## Usage
 
-This template provides a solid foundation for new projects. Here's how to make the most of it:
+Horizon Core provides a foundation for building secure applications. Here's how to use it:
 
 ### Project Structure
 
 See [FOLDER_STRUCTURE.md](FOLDER_STRUCTURE.md) for a detailed explanation of the repository structure.
 
-### Creating Issues
+### Development
 
-Use the provided issue templates:
-- **Bug Reports**: Use `.github/ISSUE_TEMPLATE/bug_report.md`
-- **Feature Requests**: Use `.github/ISSUE_TEMPLATE/feature_request.md`
-
-### Submitting Pull Requests
-
-Follow the pull request template at `.github/PULL_REQUEST_TEMPLATE.md` to ensure all necessary information is provided.
+Development guidelines and workflows are being established. For now:
+- Follow the contribution guidelines in [CONTRIBUTING.md](CONTRIBUTING.md)
+- Use the provided issue templates for bug reports and feature requests
+- Submit pull requests following the template
 
 ### Running CI
 
@@ -62,7 +61,7 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) automatically runs on:
 - Push to main branch
 - Pull requests to main branch
 
-Customize the workflow to include your project's specific tests and linting requirements.
+The workflow will be customized to include project-specific tests and linting requirements as the project develops.
 
 ## Contributing
 
@@ -93,5 +92,5 @@ For questions, issues, or feature requests:
 
 ## Acknowledgments
 
-- Thanks to all contributors who help improve this template
+- Thanks to all contributors who help improve Horizon Core
 - Built with ❤️ by the HorizonSec team
