@@ -17,17 +17,29 @@ horizon-core/
 │   └── README.md                   # Configuration documentation
 ├── docs/                            # Additional documentation
 │   └── README.md                   # Documentation index
-├── src/                             # Source code directory
-│   └── README.md                   # Source code documentation
-├── tests/                           # Test files
-│   └── README.md                   # Testing documentation
+├── horizon_core/                    # Main Python package
+│   ├── __init__.py                 # Package initialization
+│   ├── cli_framework.py            # Standardized CLI utilities
+│   ├── logging.py                  # Logging utilities
+│   ├── sarif.py                    # SARIF schema definitions
+│   └── config.py                   # Configuration loader
+├── tests/                           # Unit and integration tests
+│   ├── __init__.py
+│   ├── test_cli_framework.py
+│   ├── test_logging.py
+│   ├── test_sarif.py
+│   └── test_config.py
+├── .gitignore                       # Git ignore patterns
 ├── CODE_OF_CONDUCT.md               # Community code of conduct
 ├── CONTRIBUTING.md                  # Contribution guidelines
+├── Dockerfile                       # Docker container for the library
 ├── FOLDER_STRUCTURE.md              # This file - describes repository structure
 ├── LICENSE                          # MIT License
+├── pyproject.toml                   # Python project configuration (Hatch)
 ├── README.md                        # Main project documentation
+├── requirements.txt                 # Python dependencies
 ├── SECURITY.md                      # Security policy and vulnerability reporting
-└── .gitignore                       # Git ignore patterns
+└── setup.py                         # Package configuration (backward compatibility)
 ```
 
 ## Directory Descriptions
@@ -88,23 +100,34 @@ Contains all GitHub-specific configuration files:
 
 ### Source Code Directories
 
-#### `src/`
-Contains the source code for Horizon Core. This directory will include:
-- Core components and modules
-- Utility functions and helpers
-- Service implementations
-- Business logic
+#### `horizon_core/`
+The main Python package containing shared utilities and framework components:
 
-See `src/README.md` for detailed information about the source code organization.
+- **`__init__.py`**: Package initialization and public API exports
+- **`cli_framework.py`**: Standardized CLI utilities for building command-line tools
+  - `CLI` class for application setup
+  - `Command` base class for implementing commands
+  - Argument parsing and command execution
+- **`logging.py`**: Logging utilities for consistent logging across tools
+  - `setup_logging()` function for configuration
+  - `get_logger()` for obtaining logger instances
+  - `LoggerMixin` for adding logging to classes
+- **`sarif.py`**: SARIF schema definitions for security findings
+  - Data classes for SARIF format
+  - Utilities for creating and serializing SARIF reports
+- **`config.py`**: Configuration loader supporting multiple formats
+  - `Config` class for managing configuration
+  - Support for JSON and YAML files
+  - Environment variable overrides
 
 #### `tests/`
 Contains all test files for the project:
-- Unit tests
-- Integration tests
-- End-to-end tests
-- Test utilities and fixtures
+- `test_cli_framework.py`: Tests for CLI framework
+- `test_logging.py`: Tests for logging utilities
+- `test_sarif.py`: Tests for SARIF functionality
+- `test_config.py`: Tests for configuration management
 
-See `tests/README.md` for detailed information about testing.
+Tests use pytest and aim for comprehensive coverage of all modules.
 
 #### `docs/`
 Contains additional documentation beyond the root-level markdown files:

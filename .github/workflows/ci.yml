@@ -15,92 +15,49 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Check file formatting
-      run: |
-        echo "Running basic file checks..."
-        # Check for trailing whitespace
-        if grep -r --exclude-dir=.git --exclude-dir=node_modules -n '[[:blank:]]$' .; then
-          echo "Error: Trailing whitespace found"
-          exit 1
-        fi
-        echo "File formatting checks passed!"
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
 
-    - name: Validate Markdown
-      uses: actionshub/markdownlint@main
-      continue-on-error: true
-
-    - name: Check for large files
+    - name: Install dependencies
       run: |
-        echo "Checking for large files..."
-        large_files=$(find . -type f -size +10M -not -path "./.git/*")
-        if [ -n "$large_files" ]; then
-          echo "Warning: Large files found:"
-          echo "$large_files"
-        else
-          echo "No large files found"
-        fi
+        python -m pip install --upgrade pip
+        pip install hatch
+
+    - name: Run linters
+      run: |
+        hatch run lint:check
 
   test:
     name: Test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Verify required files
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
       run: |
-        echo "Verifying required template files exist..."
-        required_files=(
-          "README.md"
-          "CONTRIBUTING.md"
-          "CODE_OF_CONDUCT.md"
-          "LICENSE"
-          "SECURITY.md"
-          ".gitignore"
-          ".github/ISSUE_TEMPLATE/bug_report.md"
-          ".github/ISSUE_TEMPLATE/feature_request.md"
-          ".github/PULL_REQUEST_TEMPLATE.md"
-        )
+        python -m pip install --upgrade pip
+        pip install hatch
 
-        missing_files=()
-        for file in "${required_files[@]}"; do
-          if [ ! -f "$file" ]; then
-            missing_files+=("$file")
-          fi
-        done
-
-        if [ ${#missing_files[@]} -ne 0 ]; then
-          echo "Error: Missing required files:"
-          printf '%s\n' "${missing_files[@]}"
-          exit 1
-        fi
-
-        echo "All required template files are present!"
-
-    - name: Validate file content
+    - name: Run tests
       run: |
-        echo "Validating file content..."
+        hatch run test-cov
 
-        # Check README has basic sections
-        if ! grep -q "## Overview" README.md || ! grep -q "## Installation" README.md; then
-          echo "Error: README.md missing required sections"
-          exit 1
-        fi
-
-        # Check LICENSE contains MIT
-        if ! grep -q "MIT License" LICENSE; then
-          echo "Error: LICENSE file doesn't contain MIT License"
-          exit 1
-        fi
-
-        # Check CODE_OF_CONDUCT has required sections
-        if ! grep -q "## Our Pledge" CODE_OF_CONDUCT.md; then
-          echo "Error: CODE_OF_CONDUCT.md missing required sections"
-          exit 1
-        fi
-
-        echo "File content validation passed!"
+    - name: Upload coverage reports
+      if: matrix.python-version == '3.12'
+      uses: codecov/codecov-action@v4
+      continue-on-error: true
 
   security:
     name: Security Check
@@ -130,7 +87,21 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Verify template structure
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
       run: |
-        echo "Template structure verification complete!"
-        echo "All checks passed. Template is ready to use!"
+        python -m pip install --upgrade pip
+        pip install hatch
+
+    - name: Build package
+      run: |
+        hatch build
+
+    - name: Verify build artifacts
+      run: |
+        ls -lh dist/
+        echo "Build completed successfully!"

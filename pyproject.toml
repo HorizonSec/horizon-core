@@ -1,0 +1,113 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "horizon-core"
+version = "0.1.0"
+description = "Shared utilities and framework for HorizonSec tools"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+keywords = ["security", "cli", "sarif", "utilities"]
+authors = [
+    {name = "HorizonSec Team"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "pyyaml>=6.0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/HorizonSec/horizon-core"
+Repository = "https://github.com/HorizonSec/horizon-core"
+Issues = "https://github.com/HorizonSec/horizon-core/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["horizon_core"]
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-cov = "pytest --cov=horizon_core --cov-report=term-missing --cov-report=html {args:tests}"
+cov-report = "coverage report"
+
+[tool.hatch.envs.lint]
+detached = true
+dependencies = [
+    "black>=23.7.0",
+    "flake8>=6.1.0",
+    "isort>=5.12.0",
+    "mypy>=1.5.0",
+]
+
+[tool.hatch.envs.lint.scripts]
+check = [
+    "black --check .",
+    "isort --check-only .",
+    "flake8 .",
+    "mypy horizon_core",
+]
+format = [
+    "black .",
+    "isort .",
+]
+
+[tool.hatch.envs.docs]
+dependencies = [
+    "sphinx>=7.1.0",
+    "sphinx-rtd-theme>=1.3.0",
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "sphinx-build -b html docs docs/_build/html"
+serve = "python -m http.server -d docs/_build/html"
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310", "py311", "py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v"
+
+[tool.coverage.run]
+source = ["horizon_core"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+]

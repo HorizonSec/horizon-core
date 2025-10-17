@@ -20,9 +20,9 @@ This repository includes:
 ### Prerequisites
 
 Before using Horizon Core, ensure you have:
+- Python 3.8 or higher
+- pip (Python package installer)
 - Git installed on your local machine
-- A GitHub account with access to HorizonSec organization
-- Basic understanding of Git and GitHub workflows
 
 ### Installation
 
@@ -31,29 +31,140 @@ Before using Horizon Core, ensure you have:
    git clone https://github.com/HorizonSec/horizon-core.git
    cd horizon-core
    ```
-2. **Install dependencies** (when applicable):
+
+2. **Install dependencies**:
    ```bash
-   # Instructions will be added as the project develops
+   pip install -r requirements.txt
    ```
-3. **Build the project** (when applicable):
+
+3. **Install the package** (development mode):
    ```bash
-   # Instructions will be added as the project develops
+   pip install -e .
    ```
+
+   Or using Hatch:
+   ```bash
+   pip install hatch
+   hatch shell
+   ```
+
+### Quick Start
+
+```python
+from horizon_core import CLI, Command, setup_logging, get_logger
+
+# Set up logging
+setup_logging(level="INFO")
+logger = get_logger(__name__)
+
+# Use the CLI framework
+# (See examples in docs/)
+```
 
 ## Usage
 
-Horizon Core provides a foundation for building secure applications. Here's how to use it:
+Horizon Core provides shared utilities and framework for building security tools. Here's how to use it:
+
+### Core Modules
+
+#### CLI Framework
+Build command-line tools with a standardized interface:
+
+```python
+from horizon_core import CLI, Command
+import argparse
+
+class MyCommand(Command):
+    def __init__(self):
+        super().__init__("scan", "Scan for security issues")
+    
+    def configure_parser(self, parser: argparse.ArgumentParser):
+        parser.add_argument("--target", required=True, help="Target to scan")
+    
+    def execute(self, args: argparse.Namespace) -> int:
+        print(f"Scanning {args.target}...")
+        return 0
+
+cli = CLI("mytool", "My Security Tool", "1.0.0")
+cli.add_command(MyCommand())
+cli.run()
+```
+
+#### Logging
+Consistent logging across tools:
+
+```python
+from horizon_core import setup_logging, get_logger
+
+setup_logging(level="INFO")
+logger = get_logger(__name__)
+logger.info("Application started")
+```
+
+#### SARIF Output
+Generate standardized security findings in SARIF format:
+
+```python
+from horizon_core.sarif import SARIFReport, Run, Tool, Result, Message
+
+report = SARIFReport()
+tool = Tool(name="MyScanner", version="1.0.0")
+run = Run(tool=tool)
+run.results.append(Result(
+    ruleId="SEC001",
+    message=Message(text="Security issue found")
+))
+report.add_run(run)
+report.save("results.sarif")
+```
+
+#### Configuration Management
+Load and manage configuration from files and environment:
+
+```python
+from horizon_core import load_config
+
+config = load_config("config.yaml")
+port = config.get("server.port", 8080)
+```
+
+### Development
+
+Run tests:
+```bash
+hatch run test
+```
+
+Run tests with coverage:
+```bash
+hatch run test-cov
+```
+
+Format code:
+```bash
+hatch run lint:format
+```
+
+Check code quality:
+```bash
+hatch run lint:check
+```
+
+### Docker
+
+Build the Docker image:
+```bash
+docker build -t horizon-core .
+```
+
+Run in Docker:
+```bash
+docker run -it horizon-core python -c "import horizon_core; print(horizon_core.__version__)"
+```
 
 ### Project Structure
 
 See [FOLDER_STRUCTURE.md](FOLDER_STRUCTURE.md) for a detailed explanation of the repository structure.
-
-### Development
-
-Development guidelines and workflows are being established. For now:
-- Follow the contribution guidelines in [CONTRIBUTING.md](CONTRIBUTING.md)
-- Use the provided issue templates for bug reports and feature requests
-- Submit pull requests following the template
 
 ### Running CI
 
@@ -61,7 +172,11 @@ The GitHub Actions workflow (`.github/workflows/ci.yml`) automatically runs on:
 - Push to main branch
 - Pull requests to main branch
 
-The workflow will be customized to include project-specific tests and linting requirements as the project develops.
+The workflow includes:
+- Linting with black, isort, flake8, and mypy
+- Testing across Python 3.8-3.12
+- Security checks
+- Package building
 
 ## Contributing
 
