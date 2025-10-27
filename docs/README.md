@@ -1,17 +1,37 @@
 # Documentation
 
-This directory contains additional documentation for Horizon Core beyond the root-level markdown files.
-
-Horizon Core is a secure logging library that provides automatic redaction of sensitive information from log messages.
+This directory contains the Sphinx documentation for Horizon Core, a secure logging library that provides automatic redaction of sensitive information from log messages.
 
 ## Structure
 
-As the project develops, documentation will be organized into:
+- **source/**: Sphinx source files (.rst and .md files)
+  - `index.rst`: Main documentation index
+  - `installation.md`: Installation instructions
+  - `api.md`: API reference documentation  
+  - `examples.md`: Usage examples and code samples
+  - `security.md`: Security considerations and best practices
+  - `conf.py`: Sphinx configuration
+- **build/**: Generated HTML documentation (created when building)
 
-- **api/**: API reference for SecureLogger and related classes
-- **guides/**: User guides for secure logging best practices
-- **architecture/**: Architecture documentation and design decisions for security features
-- **examples/**: Code examples demonstrating secure logging patterns
+## Building Documentation
+
+To build the documentation locally:
+
+```bash
+# Install dependencies (if not already done)
+pip install hatch
+
+# Build documentation
+hatch run dev:docs
+
+# Clean build (rebuild everything)
+hatch run dev:docs-clean
+
+# Serve documentation locally
+hatch run dev:docs-serve
+```
+
+The generated HTML documentation will be in `docs/build/` and can be viewed by opening `docs/build/index.html` in a web browser.
 
 ## Documentation Guidelines
 
@@ -27,22 +47,26 @@ When writing documentation:
 
 This section will contain links to key documentation as it's added:
 
+## Documentation Content
+
 ### Getting Started
-- Installation guide (see main README.md)
-- Quick start guide (see main README.md)
+- **Installation Guide**: Complete installation instructions for different environments
+- **Quick Start Guide**: Basic usage examples to get started immediately
 
 ### API Documentation
-- SecureLogger API reference (coming soon)
-- SensitiveDataFormatter API reference (coming soon)
+- **SecureLogger**: Full API reference for the secure logger class
+- **SensitiveDataFormatter**: Documentation for the redaction formatter
+- **setup_logger**: Function reference for creating secure loggers
 
-### Guides
-- Secure logging best practices (coming soon)
-- Custom sensitive data patterns (coming soon)
-- Integration guides (coming soon)
+### Usage Guides  
+- **Examples**: Comprehensive usage examples for various scenarios
+- **Security Best Practices**: Guidelines for secure logging implementation
+- **Integration Patterns**: How to integrate with existing applications
 
-### Architecture
-- Sensitive data detection architecture (coming soon)
-- Security design decisions (coming soon)
+### Security Documentation
+- **Threat Model**: Understanding the security risks addressed
+- **Redaction Patterns**: Details on what sensitive data is detected
+- **Deployment Guidelines**: Secure deployment and configuration practices
 
 ## Contributing to Documentation
 
