@@ -1,51 +1,48 @@
 # Configuration
 
-This directory contains configuration files for Horizon Core.
+This directory is reserved for future configuration files for Horizon Core.
 
-## Structure
+Currently, Horizon Core focuses on secure logging and does not require external configuration files. All configuration is done programmatically through the `setup_logger()` function.
 
-As the project develops, configuration will be organized into:
+## Future Structure
 
-- **development/**: Development environment configuration
-- **staging/**: Staging environment configuration  
-- **production/**: Production environment configuration
-- Tool-specific configuration files
+As the project expands, configuration may be organized into:
 
-## Configuration Guidelines
+- **logging/**: Logging-specific configuration files
+- **development/**: Development environment settings
+- **production/**: Production environment settings
 
-When adding configuration:
+## Current Logging Configuration
 
-1. **Use environment variables**: Keep sensitive data out of configuration files
-2. **Provide defaults**: Include sensible default values
-3. **Document options**: Comment configuration options clearly
-4. **Separate by environment**: Use different configs for different environments
-5. **Version control**: Commit configuration files (but not secrets!)
+Horizon Core's secure logging is configured programmatically:
 
-## Environment Variables
+```python
+from horizon_core import setup_logger
+import logging
 
-Sensitive configuration should be stored in environment variables, not in files committed to the repository.
+# Basic configuration
+logger = setup_logger("my-app", level=logging.INFO)
 
-Example `.env` file structure (do not commit):
-```
-# Database configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=horizon_core
-DB_USER=your_user
-DB_PASSWORD=your_password
+# Simple format (just level and message)
+logger = setup_logger("my-app", level=logging.INFO, simple=True)
 
-# API keys (never commit these!)
-API_KEY=your_api_key_here
-SECRET_KEY=your_secret_key_here
+# Custom configuration
+from horizon_core.logging import SecureLogger, SensitiveDataFormatter
+
+logger = SecureLogger("custom-app")
+handler = logging.StreamHandler()
+formatter = SensitiveDataFormatter("%(asctime)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 ```
 
-## Configuration Best Practices
+## Security Best Practices
 
-1. **Never commit secrets**: Use `.gitignore` to exclude files with sensitive data
-2. **Use a .env.example file**: Provide a template with placeholder values
-3. **Document all options**: Include comments explaining what each setting does
-4. **Validate configuration**: Check that required values are present at startup
-5. **Use type-safe configs**: Validate configuration types when possible
+1. **No secrets in logs**: Horizon Core automatically redacts sensitive data
+2. **Use secure loggers**: Always use `setup_logger()` or `SecureLogger` 
+3. **Review log output**: Test that sensitive data is properly redacted
+4. **Custom patterns**: Add custom sensitive patterns if needed
+5. **Log levels**: Use appropriate log levels to avoid over-logging
 
 ## Questions?
 

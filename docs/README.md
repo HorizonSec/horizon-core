@@ -2,14 +2,16 @@
 
 This directory contains additional documentation for Horizon Core beyond the root-level markdown files.
 
+Horizon Core is a secure logging library that provides automatic redaction of sensitive information from log messages.
+
 ## Structure
 
 As the project develops, documentation will be organized into:
 
-- **api/**: API reference and documentation
-- **guides/**: User guides and tutorials
-- **architecture/**: Architecture documentation and design decisions
-- **examples/**: Code examples and sample implementations
+- **api/**: API reference for SecureLogger and related classes
+- **guides/**: User guides for secure logging best practices
+- **architecture/**: Architecture documentation and design decisions for security features
+- **examples/**: Code examples demonstrating secure logging patterns
 
 ## Documentation Guidelines
 
@@ -26,19 +28,21 @@ When writing documentation:
 This section will contain links to key documentation as it's added:
 
 ### Getting Started
-- Installation guide (coming soon)
-- Quick start guide (coming soon)
+- Installation guide (see main README.md)
+- Quick start guide (see main README.md)
 
 ### API Documentation
-- API reference (coming soon)
+- SecureLogger API reference (coming soon)
+- SensitiveDataFormatter API reference (coming soon)
 
 ### Guides
-- User guides (coming soon)
-- Developer guides (coming soon)
+- Secure logging best practices (coming soon)
+- Custom sensitive data patterns (coming soon)
+- Integration guides (coming soon)
 
 ### Architecture
-- System architecture (coming soon)
-- Design decisions (coming soon)
+- Sensitive data detection architecture (coming soon)
+- Security design decisions (coming soon)
 
 ## Contributing to Documentation
 

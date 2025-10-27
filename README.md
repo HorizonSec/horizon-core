@@ -1,17 +1,19 @@
 # Horizon Core
 
-[![CI](https://github.com/HorizonSec/horizon-core/workflows/CI/badge.svg)](https://github.com/HorizonSec/horizon-core/actions)
+[![Full Build](https://github.com/HorizonSec/horizon-core/workflows/Full%20Build/badge.svg)](https://github.com/HorizonSec/horizon-core/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
-Welcome to the **Horizon Core** repository! This is the core library and framework for the HorizonSec organization, providing fundamental components, utilities, and services for building secure applications.
+Welcome to the **Horizon Core** repository! This is the core library providing secure logging utilities for the HorizonSec organization, focusing on standardized logging with built-in security features to protect sensitive information.
 
 This repository includes:
+- **SecureLogger**: A logging system that automatically redacts sensitive information
+- **SensitiveDataFormatter**: A formatter that prevents sensitive data leaks in logs
 - Comprehensive documentation (README, CONTRIBUTING, CODE_OF_CONDUCT)
 - Issue and pull request templates
-- GitHub Actions CI workflow
-- Security policy
+- GitHub Actions workflows for building, testing, and documentation
+- Security policy and vulnerability scanning
 - Standard .gitignore configurations
 - Open-source license (MIT)
 
@@ -20,7 +22,7 @@ This repository includes:
 ### Prerequisites
 
 Before using Horizon Core, ensure you have:
-- Python 3.8 or higher
+- Python 3.9 or higher
 - pip (Python package installer)
 - Git installed on your local machine
 
@@ -32,103 +34,111 @@ Before using Horizon Core, ensure you have:
    cd horizon-core
    ```
 
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Install the package** (development mode):
-   ```bash
-   pip install -e .
-   ```
-
-   Or using Hatch:
+2. **Install using Hatch** (recommended):
    ```bash
    pip install hatch
    hatch shell
    ```
 
+3. **Or install directly**:
+   ```bash
+   pip install -e .
+   ```
+
+4. **For development with all tools**:
+   ```bash
+   pip install hatch
+   hatch env create dev
+   hatch shell dev
+   ```
+
 ### Quick Start
 
 ```python
-from horizon_core import CLI, Command, setup_logging, get_logger
+from horizon_core import setup_logger
+import logging
 
-# Set up logging
-setup_logging(level="INFO")
-logger = get_logger(__name__)
+# Set up a secure logger that automatically redacts sensitive information
+logger = setup_logger("my-app", level=logging.INFO)
 
-# Use the CLI framework
-# (See examples in docs/)
+# These messages will have sensitive data automatically redacted
+logger.info("Starting application")
+logger.info("User password is secret123")  # Will show: "User password is [REDACTED]"
+logger.info("API key: abc123def456")        # Will show: "API key: [REDACTED]"
 ```
 
 ## Usage
 
-Horizon Core provides shared utilities and framework for building security tools. Here's how to use it:
+Horizon Core provides secure logging utilities to prevent sensitive information leaks in application logs. Here's how to use it:
 
-### Core Modules
+### Secure Logging
 
-#### CLI Framework
-Build command-line tools with a standardized interface:
+The main feature of Horizon Core is the `SecureLogger` that automatically redacts sensitive information from log messages:
 
 ```python
-from horizon_core import CLI, Command
-import argparse
+from horizon_core import setup_logger
+import logging
 
-class MyCommand(Command):
-    def __init__(self):
-        super().__init__("scan", "Scan for security issues")
-    
-    def configure_parser(self, parser: argparse.ArgumentParser):
-        parser.add_argument("--target", required=True, help="Target to scan")
-    
-    def execute(self, args: argparse.Namespace) -> int:
-        print(f"Scanning {args.target}...")
-        return 0
+# Create a secure logger
+logger = setup_logger("myapp", level=logging.INFO)
 
-cli = CLI("mytool", "My Security Tool", "1.0.0")
-cli.add_command(MyCommand())
-cli.run()
+# Log normally - sensitive data will be automatically redacted
+logger.info("Database connection: postgresql://user:password@localhost/db")
+logger.warning("Invalid API token: secret123token")
+logger.error("Authentication failed for key=abc123")
+
+# Output will show:
+# INFO: Database connection: postgresql://user:[REDACTED]@localhost/db
+# WARNING: Invalid API token: [REDACTED]
+# ERROR: Authentication failed for key=[REDACTED]
 ```
 
-#### Logging
-Consistent logging across tools:
+#### Sensitive Data Patterns
+
+The logger automatically detects and redacts the following sensitive patterns:
+- Passwords (`password is secret`, `password=value`, `password: value`)
+- API keys (`api_key: value`, `apikey=value`)
+- Tokens (`token: value`, `token=value`)
+- Authorization headers (`authorization: bearer`, `auth=value`)
+- Credentials, secrets, private keys, sessions, cookies, JWT tokens, OAuth tokens
+
+#### Simple vs Detailed Logging Format
 
 ```python
-from horizon_core import setup_logging, get_logger
+# Detailed format (default): includes timestamp, logger name, level
+logger = setup_logger("myapp", level=logging.INFO, simple=False)
+# Output: 2024-01-01 12:00:00,000 - myapp - INFO - Application started
 
-setup_logging(level="INFO")
-logger = get_logger(__name__)
-logger.info("Application started")
+# Simple format: just level and message
+logger = setup_logger("myapp", level=logging.INFO, simple=True)
+# Output: INFO: Application started
 ```
 
-#### SARIF Output
-Generate standardized security findings in SARIF format:
+#### Custom Logger Configuration
 
 ```python
-from horizon_core.sarif import SARIFReport, Run, Tool, Result, Message
+from horizon_core.logging import SecureLogger, SensitiveDataFormatter
+import logging
 
-report = SARIFReport()
-tool = Tool(name="MyScanner", version="1.0.0")
-run = Run(tool=tool)
-run.results.append(Result(
-    ruleId="SEC001",
-    message=Message(text="Security issue found")
-))
-report.add_run(run)
-report.save("results.sarif")
-```
+# Create a custom secure logger with your own configuration
+logger = SecureLogger("custom-app")
+logger.setLevel(logging.DEBUG)
 
-#### Configuration Management
-Load and manage configuration from files and environment:
+# Add custom handler with sensitive data formatting
+handler = logging.StreamHandler()
+formatter = SensitiveDataFormatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
-```python
-from horizon_core import load_config
-
-config = load_config("config.yaml")
-port = config.get("server.port", 8080)
+# Use the logger
+logger.debug("Debug info with secret=hidden_value")
 ```
 
 ### Development
+
+#### Using Hatch
+
+This project uses [Hatch](https://hatch.pypa.io/) for dependency management and development tasks.
 
 Run tests:
 ```bash
@@ -138,45 +148,74 @@ hatch run test
 Run tests with coverage:
 ```bash
 hatch run test-cov
+hatch run cov-report
 ```
 
 Format code:
 ```bash
-hatch run lint:format
+hatch run format
 ```
 
 Check code quality:
 ```bash
-hatch run lint:check
+hatch run pre-build
 ```
 
-### Docker
-
-Build the Docker image:
+Build documentation:
 ```bash
-docker build -t horizon-core .
+hatch run dev:docs
 ```
 
-Run in Docker:
+Build the package:
 ```bash
-docker run -it horizon-core python -c "import horizon_core; print(horizon_core.__version__)"
+hatch build
+```
+
+#### Development Environment
+
+Set up development environment:
+```bash
+hatch env create dev
+hatch shell dev
+```
+
+Run type checking:
+```bash
+hatch run dev:typecheck
+```
+
+Run security checks:
+```bash
+hatch run dev:bandit -r ./horizon_core
 ```
 
 ### Project Structure
 
 See [FOLDER_STRUCTURE.md](FOLDER_STRUCTURE.md) for a detailed explanation of the repository structure.
 
-### Running CI
+### CI/CD Pipeline
 
-The GitHub Actions workflow (`.github/workflows/ci.yml`) automatically runs on:
-- Push to main branch
-- Pull requests to main branch
+The project uses multiple GitHub Actions workflows:
 
-The workflow includes:
-- Linting with black, isort, flake8, and mypy
-- Testing across Python 3.8-3.12
-- Security checks
-- Package building
+#### Full Build (`.github/workflows/full-build.yml`)
+Runs on every push and includes:
+- Building across Python 3.9-3.13
+- Linting with black, isort, flake8
+- Type checking with mypy
+- Unit testing with pytest
+- Package building with hatch
+
+#### Security Scanning (`.github/workflows/security-scanning.yml`)
+Runs after successful builds on the mainline branch:
+- Bandit security scanning
+- Vulnerability detection
+- Security report generation
+
+#### Documentation (`.github/workflows/docs.yml`)
+Builds and deploys documentation:
+- Builds Sphinx documentation
+- Deploys to GitHub Pages
+- Runs on mainline branch pushes
 
 ## Contributing
 
