@@ -11,35 +11,35 @@ horizon-core/
 │   │   ├── bug_report.md           # Template for reporting bugs
 │   │   └── feature_request.md      # Template for requesting features
 │   ├── workflows/                   # GitHub Actions workflows
-│   │   └── ci.yml                  # Continuous integration workflow
+│   │   ├── docs.yml                # Documentation build and deployment
+│   │   ├── full-build.yml          # Full build pipeline with testing
+│   │   └── security-scanning.yml   # Security scanning workflow
 │   └── PULL_REQUEST_TEMPLATE.md    # Template for pull requests
 ├── config/                          # Configuration files
 │   └── README.md                   # Configuration documentation
 ├── docs/                            # Additional documentation
 │   └── README.md                   # Documentation index
 ├── horizon_core/                    # Main Python package
-│   ├── __init__.py                 # Package initialization
-│   ├── cli_framework.py            # Standardized CLI utilities
-│   ├── logging.py                  # Logging utilities
-│   ├── sarif.py                    # SARIF schema definitions
-│   └── config.py                   # Configuration loader
+│   ├── __init__.py                 # Package initialization (exports setup_logger)
+│   ├── cli_framework.py            # Empty file (functionality removed)
+│   ├── logging.py                  # Secure logging utilities with data redaction
+│   ├── sarif.py                    # Empty file (functionality removed)
+│   └── config.py                   # Empty file (functionality removed)
 ├── tests/                           # Unit and integration tests
 │   ├── __init__.py
-│   ├── test_cli_framework.py
-│   ├── test_logging.py
-│   ├── test_sarif.py
-│   └── test_config.py
+│   ├── test_cli_framework.py       # Empty file (tests removed)
+│   ├── test_logging.py             # Comprehensive tests for logging module
+│   ├── test_sarif.py               # Empty file (tests removed)
+│   └── test_config.py              # Empty file (tests removed)
 ├── .gitignore                       # Git ignore patterns
 ├── CODE_OF_CONDUCT.md               # Community code of conduct
 ├── CONTRIBUTING.md                  # Contribution guidelines
-├── Dockerfile                       # Docker container for the library
 ├── FOLDER_STRUCTURE.md              # This file - describes repository structure
 ├── LICENSE                          # MIT License
 ├── pyproject.toml                   # Python project configuration (Hatch)
 ├── README.md                        # Main project documentation
 ├── requirements.txt                 # Python dependencies
-├── SECURITY.md                      # Security policy and vulnerability reporting
-└── setup.py                         # Package configuration (backward compatibility)
+└── SECURITY.md                      # Security policy and vulnerability reporting
 ```
 
 ## Directory Descriptions
@@ -53,7 +53,9 @@ Contains all GitHub-specific configuration files:
   - `feature_request.md`: Guides users in proposing new features
 
 - **`workflows/`**: GitHub Actions workflow definitions
-  - `ci.yml`: Continuous integration workflow that runs tests and checks
+  - `docs.yml`: Documentation build and deployment to GitHub Pages
+  - `full-build.yml`: Comprehensive build pipeline with linting, testing, and type checking
+  - `security-scanning.yml`: Security scanning with Bandit that runs after successful builds
 
 - **`PULL_REQUEST_TEMPLATE.md`**: Template that appears when creating pull requests
 
@@ -101,33 +103,31 @@ Contains all GitHub-specific configuration files:
 ### Source Code Directories
 
 #### `horizon_core/`
-The main Python package containing shared utilities and framework components:
+The main Python package containing secure logging utilities:
 
 - **`__init__.py`**: Package initialization and public API exports
-- **`cli_framework.py`**: Standardized CLI utilities for building command-line tools
-  - `CLI` class for application setup
-  - `Command` base class for implementing commands
-  - Argument parsing and command execution
-- **`logging.py`**: Logging utilities for consistent logging across tools
-  - `setup_logging()` function for configuration
-  - `get_logger()` for obtaining logger instances
-  - `LoggerMixin` for adding logging to classes
-- **`sarif.py`**: SARIF schema definitions for security findings
-  - Data classes for SARIF format
-  - Utilities for creating and serializing SARIF reports
-- **`config.py`**: Configuration loader supporting multiple formats
-  - `Config` class for managing configuration
-  - Support for JSON and YAML files
-  - Environment variable overrides
+  - Exports `setup_logger` function for creating secure loggers
+- **`logging.py`**: Secure logging utilities with automatic sensitive data redaction
+  - `SecureLogger` class that extends standard Python logging
+  - `SensitiveDataFormatter` that redacts sensitive information from log messages
+  - `setup_logger()` function for easy logger configuration
+  - Automatic detection and redaction of passwords, API keys, tokens, and other sensitive data
+- **`cli_framework.py`**: Empty file (functionality removed in refactor)
+- **`sarif.py`**: Empty file (functionality removed in refactor)
+- **`config.py`**: Empty file (functionality removed in refactor)
 
 #### `tests/`
 Contains all test files for the project:
-- `test_cli_framework.py`: Tests for CLI framework
-- `test_logging.py`: Tests for logging utilities
-- `test_sarif.py`: Tests for SARIF functionality
-- `test_config.py`: Tests for configuration management
+- `test_logging.py`: Comprehensive tests for secure logging functionality including:
+  - Tests for `SecureLogger` class methods
+  - Tests for `SensitiveDataFormatter` redaction patterns
+  - Tests for `setup_logger` function
+  - Edge cases and error handling tests
+- `test_cli_framework.py`: Empty file (tests removed in refactor)
+- `test_sarif.py`: Empty file (tests removed in refactor)  
+- `test_config.py`: Empty file (tests removed in refactor)
 
-Tests use pytest and aim for comprehensive coverage of all modules.
+Tests use pytest and aim for comprehensive coverage of the logging module.
 
 #### `docs/`
 Contains additional documentation beyond the root-level markdown files:

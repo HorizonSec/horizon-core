@@ -1,6 +1,6 @@
-# Contributing to Horizon Template
+# Contributing to Horizon Core
 
-First off, thank you for considering contributing to the Horizon Template! It's people like you that make this template better for everyone in the HorizonSec organization.
+First off, thank you for considering contributing to Horizon Core! It's people like you that make this secure logging library better for everyone in the HorizonSec organization.
 
 ## Table of Contents
 
@@ -85,13 +85,23 @@ We actively welcome your pull requests! Here's how to contribute code:
 
 1. Clone your fork:
    ```bash
-   git clone https://github.com/your-username/horizon-template.git
-   cd horizon-template
+   git clone https://github.com/your-username/horizon-core.git
+   cd horizon-core
    ```
 
 2. Add upstream remote:
    ```bash
-   git remote add upstream https://github.com/HorizonSec/horizon-template.git
+   git remote add upstream https://github.com/HorizonSec/horizon-core.git
+   ```
+
+3. Install Hatch (if not already installed):
+   ```bash
+   pip install hatch
+   ```
+
+4. Set up development environment:
+   ```bash
+   hatch env create dev
    ```
 
 3. Create a feature branch:
@@ -102,9 +112,29 @@ We actively welcome your pull requests! Here's how to contribute code:
 ### Making Changes
 
 1. Make your changes in your feature branch
-2. Test your changes locally
-3. Commit your changes with clear messages
-4. Push to your fork
+2. Format your code:
+   ```bash
+   hatch run format
+   ```
+3. Run type checking:
+   ```bash
+   hatch run dev:typecheck
+   ```
+4. Run linting checks:
+   ```bash
+   hatch run pre-build
+   ```
+5. Test your changes:
+   ```bash
+   hatch run test
+   hatch run test-cov
+   ```
+6. Run security checks:
+   ```bash
+   hatch run dev:bandit -r ./horizon_core
+   ```
+7. Commit your changes with clear messages
+8. Push to your fork
 
 ### Syncing with Upstream
 
@@ -124,15 +154,19 @@ git merge upstream/main
 - **Keep it simple** - Avoid unnecessary complexity
 - **Follow existing patterns** - Maintain consistency with the codebase
 - **Comment wisely** - Explain why, not what
-- **Test your code** - Write tests for new functionality
+- **Test your code** - Write comprehensive tests for new functionality
+- **Security first** - Be mindful of sensitive data handling in logging code
+- **Python 3.9+** - Ensure compatibility with Python 3.9 and higher
 
 ### Style Guide
 
-- Use consistent indentation (spaces vs tabs should match existing code)
-- Follow language-specific conventions and best practices
-- Keep line length reasonable (typically 80-120 characters)
-- Use meaningful variable and function names
-- Organize imports/includes logically
+- **Black formatting**: Code is automatically formatted with Black (line length: 100)
+- **Import organization**: Use isort for consistent import ordering
+- **Type hints**: Add type hints for all function parameters and return values
+- **Docstrings**: Use Google-style docstrings for all public functions and classes
+- **Variable names**: Use descriptive names that clearly indicate purpose
+- **Line length**: Maximum 100 characters (enforced by Black)
+- **Flake8 compliance**: Code must pass flake8 linting checks
 
 ### Documentation
 
@@ -199,4 +233,4 @@ If you have questions about contributing, feel free to:
 - Reach out to the maintainers
 - Check existing documentation
 
-Thank you for contributing to Horizon Template! 🎉
+Thank you for contributing to Horizon Core! 🎉
