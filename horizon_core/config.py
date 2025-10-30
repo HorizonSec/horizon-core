@@ -22,7 +22,7 @@ USAGE:
    }
 
 2. Import and call `load_config()` anywhere in your code:
-   from config_loader import load_config
+   from horizon_core.config import load_config
 
    config = load_config()
    print(config.risk_appetite.level)
@@ -50,6 +50,7 @@ class RiskAppetite:
 class Rules:
     enable_email_alerts: bool = False
     enable_sms_alerts: bool = False
+    enable_web_hooks: bool = False
     allow_margin_trading: bool = False
 
 @dataclass

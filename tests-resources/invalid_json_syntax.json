@@ -1,0 +1,7 @@
+{
+  "risk_appetite": {
+    "level": "medium",
+    "max_investment_per_asset": 5000,
+    "stop_loss_threshold": 0.1
+  },
+}

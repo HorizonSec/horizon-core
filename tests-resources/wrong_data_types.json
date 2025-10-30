@@ -1,0 +1,11 @@
+{
+  "risk_appetite": {
+    "level": 10,
+    "max_investment_per_asset": "not-a-number",
+    "stop_loss_threshold": "none"
+  },
+  "rules": {
+    "enable_email_alerts": "yes",
+    "enable_sms_alerts": "no"
+  }
+}
