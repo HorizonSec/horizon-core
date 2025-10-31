@@ -42,12 +42,18 @@ packages = ["horizon_core"]
 python = "3.13"
 dependencies = [
   # Core dependencies
+  "typer",
+  "rich",
+  "pyfiglet",
 ]
 
 [tool.hatch.envs.dev]
 python = "3.13"
 dependencies = [
   # Core dependencies (needed for type checking)
+  "typer",
+  "rich",
+  "pyfiglet",
   # Documentation
   "sphinx",
   "furo",
@@ -67,6 +73,9 @@ dependencies = [
 
 [tool.hatch.envs.hatch-test]
 dependencies = [
+    "typer",
+    "rich",
+    "pyfiglet",
     "pytest",
     "pytest-cov",
 ]
