@@ -12,9 +12,11 @@ __version__ = "0.1.0"
 __author__ = "HorizonSec Team"
 
 
-from .logging import setup_logger
+from .cli_wrapper import create_cli
+from .logger import setup_logger
 
 __all__ = [
     "setup_logger",
+    "create_cli",
     "__version__",
 ]
