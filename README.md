@@ -5,11 +5,14 @@
 
 ## Overview
 
-Welcome to the **Horizon Core** repository! This is the core library providing secure logging utilities for the HorizonSec organization, focusing on standardized logging with built-in security features to protect sensitive information.
+Welcome to the **Horizon Core** repository! This is the core library providing shared utilities and framework components for the HorizonSec organization, including secure logging with automatic sensitive data redaction and a standardized CLI framework for building consistent command-line tools.
 
 This repository includes:
+- **CLI Framework**: Standardized command-line interface framework with rich styling and interactive features
 - **SecureLogger**: A logging system that automatically redacts sensitive information
-- **SensitiveDataFormatter**: A formatter that prevents sensitive data leaks in logs
+- **SensitiveDataFormatter**: A formatter that prevents sensitive data leaks in logs  
+- **Configuration Management**: Utilities for handling application configuration
+- **SARIF Support**: Schema definitions for Static Analysis Results Interchange Format
 - Comprehensive documentation (README, CONTRIBUTING, CODE_OF_CONDUCT)
 - Issue and pull request templates
 - GitHub Actions workflows for building, testing, and documentation
@@ -54,6 +57,8 @@ Before using Horizon Core, ensure you have:
 
 ### Quick Start
 
+#### Secure Logging
+
 ```python
 from horizon_core import setup_logger
 import logging
@@ -67,9 +72,93 @@ logger.info("User password is secret123")  # Will show: "User password is [REDAC
 logger.info("API key: abc123def456")        # Will show: "API key: [REDACTED]"
 ```
 
+#### CLI Framework
+
+```python
+from horizon_core.cli_wrapper import CLI
+
+# Create a CLI application with consistent styling
+cli = CLI("MyTool", "A security analysis tool", "1.0.0")
+
+# Add commands with decorators
+@cli.add_command
+def scan():
+    """Run security scan."""
+    print("Running scan...")
+
+# Run the CLI with built-in help, version, and interactive mode
+if __name__ == "__main__":
+    cli.run()
+```
+
 ## Usage
 
-Horizon Core provides secure logging utilities to prevent sensitive information leaks in application logs. Here's how to use it:
+Horizon Core provides two main components: secure logging utilities and a CLI framework for building consistent command-line applications.
+
+### CLI Framework
+
+The CLI framework provides a standardized way to build command-line tools with consistent styling, interactive features, and rich console output.
+
+#### Basic CLI Application
+
+```python
+from horizon_core.cli_wrapper import CLI
+import typer
+
+# Create a CLI with automatic help, version, and interactive mode
+cli = CLI("SecurityTool", "Advanced security analysis", "2.0.0")
+
+# Add commands using decorators
+@cli.add_command
+def scan(target: str = typer.Argument(..., help="Target to scan")):
+    """Scan target for vulnerabilities."""
+    print(f"Scanning {target}...")
+
+@cli.add_command  
+def report(format: str = typer.Option("json", help="Report format")):
+    """Generate security report."""
+    print(f"Generating {format} report...")
+
+# Built-in commands available: --help, version, interactive
+if __name__ == "__main__":
+    cli.run()
+```
+
+#### Interactive Mode
+
+```python
+# Register interactive commands for guided usage
+def run_full_scan():
+    """Run comprehensive security scan."""
+    print("Starting full security scan...")
+    
+def view_last_results():
+    """View results from last scan."""
+    print("Displaying scan results...")
+
+cli.register_interactive_command("full-scan", run_full_scan)
+cli.register_interactive_command("results", view_last_results)
+
+# Users can now run: python tool.py interactive
+```
+
+#### Command Groups
+
+```python
+# Create organized command groups
+scan_group = cli.add_group("scan", "Scanning operations")
+report_group = cli.add_group("report", "Reporting operations")
+
+@scan_group.command()
+def network():
+    """Scan network infrastructure."""
+    print("Network scan starting...")
+
+@report_group.command()
+def generate():
+    """Generate detailed report."""
+    print("Report generation starting...")
+```
 
 ### Secure Logging
 
@@ -117,7 +206,7 @@ logger = setup_logger("myapp", level=logging.INFO, simple=True)
 #### Custom Logger Configuration
 
 ```python
-from horizon_core.logging import SecureLogger, SensitiveDataFormatter
+from horizon_core.logger import SecureLogger, SensitiveDataFormatter
 import logging
 
 # Create a custom secure logger with your own configuration

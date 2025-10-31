@@ -1,9 +1,11 @@
 # Horizon Core Documentation
 
-Welcome to the **Horizon Core** documentation! This library provides secure logging utilities with automatic sensitive data redaction for HorizonSec tools.
+Welcome to the **Horizon Core** documentation! This library provides shared utilities and framework components for HorizonSec tools, including secure logging with automatic sensitive data redaction and a standardized CLI framework.
 
 Quick Start
 -----------
+
+### Secure Logging
 
 .. code-block:: python
 
@@ -18,14 +20,35 @@ Quick Start
    logger.info("User password is secret123")  # Output: "User password is [REDACTED]"
    logger.info("API key: abc123def456")        # Output: "API key: [REDACTED]"
 
+### CLI Framework
+
+.. code-block:: python
+
+   from horizon_core.cli_wrapper import CLI
+
+   # Create a CLI application
+   cli = CLI("MyTool", "A security analysis tool", "1.0.0")
+
+   # Add custom commands
+   @cli.add_command
+   def scan():
+       """Run security scan."""
+       print("Running scan...")
+
+   # Run the CLI
+   if __name__ == "__main__":
+       cli.run()
+
 Key Features
 ------------
 
-- **Automatic Redaction**: Detects and redacts passwords, API keys, tokens, and other sensitive data
-- **Security First**: Prevents sensitive information leaks in log files
-- **Easy Integration**: Drop-in replacement for standard Python logging
-- **Performance Optimized**: Minimal overhead with optional simple format mode
-- **Robust Error Handling**: Graceful handling of malformed log messages
+- **Secure Logging**: Automatic redaction of passwords, API keys, tokens, and other sensitive data
+- **CLI Framework**: Standardized command-line interface with consistent styling and interactive mode
+- **Rich Console Output**: Beautiful, styled console output with colors and formatting
+- **Interactive Mode**: Guided menu-driven interface for improved usability
+- **Security First**: Built-in protections to prevent sensitive information leaks
+- **Easy Integration**: Drop-in components for rapid tool development
+- **Performance Optimized**: Minimal overhead with efficient implementations
 
 Table of Contents
 -----------------
