@@ -191,3 +191,98 @@ Consider implementing monitoring to detect:
 1. **Log Audits**: Regularly review log output for sensitive data leaks
 2. **Pattern Updates**: Update redaction patterns as new sensitive data types are identified
 3. **Security Testing**: Include logging security in penetration testing and security assessments
+
+## CLI Framework Security
+
+### Command-Line Argument Security
+
+When using the CLI framework, be aware of security considerations for command-line arguments:
+
+#### Sensitive Arguments
+
+```python
+from horizon_core.cli_wrapper import CLI
+import typer
+
+cli = CLI("SecurityTool", "Security analysis tool", "1.0.0")
+
+@cli.add_command
+def connect(
+    password: str = typer.Option(..., "--password", help="Database password"),
+    api_key: str = typer.Option(..., "--api-key", help="API key for service")
+):
+    """Connect to service with credentials."""
+    # These will be visible in process lists and shell history!
+    logger.info(f"Connecting with password: {password}")  # Will be redacted in logs
+    logger.info(f"Using API key: {api_key}")             # Will be redacted in logs
+```
+
+#### Security Best Practices for CLI
+
+1. **Avoid Sensitive Arguments**: Don't pass secrets via command-line arguments
+   ```bash
+   # ❌ Bad: Visible in process list and shell history
+   ./tool connect --password secret123 --api-key abc123
+   ```
+
+2. **Use Environment Variables**: 
+   ```python
+   import os
+   
+   @cli.add_command
+   def connect():
+       """Connect using environment variables."""
+       password = os.getenv("DB_PASSWORD")
+       api_key = os.getenv("API_KEY")
+       
+       if not password or not api_key:
+           print("Error: Please set DB_PASSWORD and API_KEY environment variables")
+           return
+   ```
+
+3. **Use Interactive Prompts**:
+   ```python
+   from rich.prompt import Prompt
+   
+   @cli.add_command
+   def connect():
+       """Connect with interactive password prompt."""
+       password = Prompt.ask("Enter password", password=True)  # Hidden input
+       api_key = Prompt.ask("Enter API key", password=True)
+   ```
+
+4. **Use Configuration Files**:
+   ```python
+   @cli.add_command
+   def connect(config_file: str = typer.Option("config.yaml", "--config")):
+       """Connect using configuration file."""
+       # Load credentials from secure config file
+       config = load_config(config_file)
+       password = config.get("password")
+       api_key = config.get("api_key")
+   ```
+
+### Interactive Mode Security
+
+The interactive mode provides additional security benefits:
+
+- **No Shell History**: Interactive selections don't appear in shell history
+- **Guided Input**: Reduces risk of accidentally exposing sensitive data
+- **Controlled Environment**: Better control over what information is displayed
+
+### Process Security
+
+When using CLI tools:
+
+1. **Process Lists**: Command-line arguments are visible in process lists (`ps`, `top`, etc.)
+2. **Shell History**: Commands are stored in shell history files (`.bash_history`, etc.)
+3. **Log Files**: CLI frameworks may log command executions
+4. **Memory Dumps**: Sensitive data in memory could be exposed in crash dumps
+
+### Recommendations
+
+1. **Use Environment Variables**: For secrets and sensitive configuration
+2. **Interactive Prompts**: For password input and sensitive data entry
+3. **Configuration Files**: Store sensitive data in properly secured config files
+4. **Audit Logging**: Log CLI usage while ensuring sensitive data is redacted
+5. **Process Monitoring**: Monitor for sensitive data exposure in process arguments

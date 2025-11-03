@@ -53,7 +53,7 @@ import logging
 import unittest
 from unittest.mock import patch
 
-from horizon_core.logging import SecureLogger, SensitiveDataFormatter, setup_logger
+from horizon_core.logger import SecureLogger, SensitiveDataFormatter, setup_logger
 
 
 class TestLoggingModule(unittest.TestCase):

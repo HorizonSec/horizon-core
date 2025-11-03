@@ -31,8 +31,8 @@ Example:
     >>> logger.info("API key: abc123def")          # Logs: "API key: [REDACTED]"
 """
 
-import logging
 import re
+from logging import INFO, NOTSET, Formatter, Logger, LogRecord, StreamHandler, getLogger
 from typing import Any
 
 # Default log format - includes timestamp, logger name, level, and message
@@ -42,7 +42,7 @@ DEFAULT_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 SIMPLE_FORMAT = "%(levelname)s: %(message)s"
 
 
-class SensitiveDataFormatter(logging.Formatter):
+class SensitiveDataFormatter(Formatter):
     """
     Custom formatter that automatically redacts sensitive information from log messages.
 
@@ -91,7 +91,7 @@ class SensitiveDataFormatter(logging.Formatter):
         "oauth",  # OAuth tokens/data
     ]
 
-    def format(self, record: logging.LogRecord) -> str:
+    def format(self, record: LogRecord) -> str:
         """
         Format the log record and redact any sensitive information.
 
@@ -134,7 +134,7 @@ class SensitiveDataFormatter(logging.Formatter):
         return formatted
 
 
-def setup_logger(name: str, level: int = logging.INFO, simple: bool = False) -> logging.Logger:
+def setup_logger(name: str, level: int = INFO, simple: bool = False) -> Logger:
     """
     Creates and configures a secure logger with automatic sensitive data redaction.
 
@@ -173,7 +173,7 @@ def setup_logger(name: str, level: int = logging.INFO, simple: bool = False) -> 
     """
     # Check if a logger with this name already exists and is properly configured
     # This prevents creating duplicate handlers and maintains logger singleton behavior
-    existing_logger = logging.getLogger(name)
+    existing_logger = getLogger(name)
     if existing_logger.handlers and isinstance(existing_logger, SecureLogger):
         return existing_logger
 
@@ -187,13 +187,13 @@ def setup_logger(name: str, level: int = logging.INFO, simple: bool = False) -> 
     logger.setLevel(level)
 
     # Create a console handler for output to stderr
-    handler = logging.StreamHandler()
+    handler = StreamHandler()
 
     # Configure formatter based on security requirements
     if simple:
         # Simple format: no sensitive data redaction for performance
         # Use this for high-frequency logging or console output
-        formatter = logging.Formatter(SIMPLE_FORMAT)
+        formatter = Formatter(SIMPLE_FORMAT)
     else:
         # Secure format: includes automatic sensitive data redaction
         # Use this for application logging and persistent logs
@@ -205,12 +205,12 @@ def setup_logger(name: str, level: int = logging.INFO, simple: bool = False) -> 
 
     # Register the logger in Python's logger registry
     # This ensures proper logger hierarchy and name-based retrieval
-    logging.Logger.manager.loggerDict[name] = logger
+    Logger.manager.loggerDict[name] = logger
 
     return logger
 
 
-class SecureLogger(logging.Logger):
+class SecureLogger(Logger):
     """
     A security-enhanced logger that provides safe handling of log messages.
 
@@ -266,7 +266,7 @@ class SecureLogger(logging.Logger):
         "oauth",  # OAuth tokens/data
     ]
 
-    def __init__(self, name: str, level: int = logging.NOTSET) -> None:
+    def __init__(self, name: str, level: int = NOTSET) -> None:
         """
         Initialize the SecureLogger with the specified name and level.
 
