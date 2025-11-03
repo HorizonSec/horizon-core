@@ -1,4 +1,4 @@
-"""Test module for CLI wrapper functionality."""
+"""Test module for CLIWrapper wrapper functionality."""
 
 import unittest
 from typing import TYPE_CHECKING
@@ -6,18 +6,18 @@ from unittest.mock import Mock, patch
 
 import typer
 
-from horizon_core.cli_wrapper import CLI, create_cli
+from horizon_core.cli_wrapper import CLIWrapper, create_cli
 
 if TYPE_CHECKING:
     from unittest.mock import MagicMock
 
 
 class TestCLI(unittest.TestCase):
-    """Test cases for CLI class."""
+    """Test cases for CLIWrapper class."""
 
     def test_cli_initialization_with_default_params(self):
-        """Test CLI initialization with default parameters."""
-        cli = CLI("TestApp", "A test application")
+        """Test CLIWrapper initialization with default parameters."""
+        cli = CLIWrapper("TestApp", "A test application")
         self.assertEqual(cli.app_name, "TestApp")
         self.assertEqual(cli.app_description, "A test application")
         self.assertEqual(cli.version, "1.0.0")
@@ -26,10 +26,10 @@ class TestCLI(unittest.TestCase):
         self.assertIsInstance(cli.interactive_commands, dict)
 
     def test_cli_initialization_with_custom_params(self):
-        """Test CLI initialization with custom parameters."""
+        """Test CLIWrapper initialization with custom parameters."""
         ascii_art = "Custom ASCII Art"
 
-        cli = CLI(
+        cli = CLIWrapper(
             app_name="CustomApp",
             app_description="Custom description",
             version="2.0.0",
@@ -48,7 +48,7 @@ class TestCLI(unittest.TestCase):
         mock_console.return_value = mock_console_instance
 
         ascii_art = "Custom ASCII"
-        cli = CLI("TestApp", "Test description", "1.0.0", ascii_art)
+        cli = CLIWrapper("TestApp", "Test description", "1.0.0", ascii_art)
 
         with patch.object(cli, "_show_banner") as mock_show_banner:
             mock_show_banner()
@@ -64,7 +64,7 @@ class TestCLI(unittest.TestCase):
         mock_console.return_value = mock_console_instance
         mock_figlet.return_value = "ASCII ART"
 
-        cli = CLI("TestApp", "Test description", "1.0.0")
+        cli = CLIWrapper("TestApp", "Test description", "1.0.0")
         # Test banner display through direct method call
         with patch.object(cli, "_show_banner") as mock_show_banner:
             mock_show_banner()
@@ -80,7 +80,7 @@ class TestCLI(unittest.TestCase):
         mock_console.return_value = mock_console_instance
         mock_figlet.side_effect = Exception("Figlet error")
 
-        cli = CLI("TestApp", "Test description", "1.0.0")
+        cli = CLIWrapper("TestApp", "Test description", "1.0.0")
 
         with patch.object(cli, "_show_banner") as mock_show_banner:
             mock_show_banner()
@@ -88,7 +88,7 @@ class TestCLI(unittest.TestCase):
 
     def test_register_interactive_command(self):
         """Test registering interactive commands."""
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
 
         def test_command():
             """Test command."""
@@ -101,7 +101,7 @@ class TestCLI(unittest.TestCase):
 
     def test_add_command(self):
         """Test adding custom commands."""
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
 
         @cli.add_command
         def custom_command():
@@ -114,7 +114,7 @@ class TestCLI(unittest.TestCase):
 
     def test_add_group(self):
         """Test adding command groups."""
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
 
         group = cli.add_group("subcommands", "Subcommand group")
 
@@ -126,7 +126,7 @@ class TestCLI(unittest.TestCase):
         mock_console_instance = Mock()
         mock_console.return_value = mock_console_instance
 
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
         cli.register_interactive_command("test", lambda: None)
         with patch.object(cli, "_show_interactive_help") as mock_show_help:
             mock_show_help()
@@ -134,7 +134,7 @@ class TestCLI(unittest.TestCase):
 
     def test_interactive_mode_exit(self) -> None:
         """Test interactive mode exit."""
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
         with (
             patch.object(cli, "_show_banner"),
             patch.object(cli, "_interactive_mode") as mock_interactive_mode,
@@ -142,7 +142,7 @@ class TestCLI(unittest.TestCase):
             mock_interactive_mode()
             mock_interactive_mode.assert_called_once()
 
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
         with patch.object(cli, "_show_banner"), patch.object(cli, "_show_interactive_help"):
             with patch.object(cli, "_interactive_mode") as mock_interactive:
                 mock_interactive()
@@ -151,7 +151,7 @@ class TestCLI(unittest.TestCase):
 
     def test_interactive_mode_keyboard_interrupt(self) -> None:
         """Test interactive mode keyboard interrupt handling."""
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
         with (
             patch.object(cli, "_show_banner"),
             patch.object(cli, "_interactive_mode") as mock_interactive_mode,
@@ -161,7 +161,7 @@ class TestCLI(unittest.TestCase):
 
     def test_interactive_mode_exception(self) -> None:
         """Test interactive mode general exception handling."""
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
         with (
             patch.object(cli, "_show_banner"),
             patch.object(cli, "_interactive_mode") as mock_interactive_mode,
@@ -169,27 +169,27 @@ class TestCLI(unittest.TestCase):
             mock_interactive_mode()
             mock_interactive_mode.assert_called_once()
 
-        # Test that the CLI instance was created successfully
+        # Test that the CLIWrapper instance was created successfully
         self.assertIsInstance(cli.app, typer.Typer)
 
     def test_run_keyboard_interrupt(self) -> None:
-        """Test running CLI with keyboard interrupt."""
-        cli = CLI("TestApp")
+        """Test running CLIWrapper with keyboard interrupt."""
+        cli = CLIWrapper("TestApp")
 
-        # Test that KeyboardInterrupt handling exists in the CLI
-        # This is a simplified test since the actual CLI run has complex argument parsing
+        # Test that KeyboardInterrupt handling exists in the CLIWrapper
+        # This is a simplified test since the actual CLIWrapper run has complex argument parsing
         with patch.object(cli, "_show_banner"):
-            # Verify the CLI instance was created successfully
+            # Verify the CLIWrapper instance was created successfully
             self.assertIsInstance(cli.app, typer.Typer)
 
     def test_run_exception(self) -> None:
-        """Test running CLI with general exception."""
-        cli = CLI("TestApp")
+        """Test running CLIWrapper with general exception."""
+        cli = CLIWrapper("TestApp")
 
-        # Test that exception handling exists in the CLI
-        # This is a simplified test since the actual CLI run has complex argument parsing
+        # Test that exception handling exists in the CLIWrapper
+        # This is a simplified test since the actual CLIWrapper run has complex argument parsing
         with patch.object(cli, "_show_banner"):
-            # Verify the CLI instance was created successfully
+            # Verify the CLIWrapper instance was created successfully
             self.assertIsInstance(cli.app, typer.Typer)
 
 
@@ -197,17 +197,17 @@ class TestCreateCLI(unittest.TestCase):
     """Test cases for create_cli factory function."""
 
     def test_create_cli_default_params(self):
-        """Test creating CLI with default parameters."""
+        """Test creating CLIWrapper with default parameters."""
         cli = create_cli("TestApp")
 
-        self.assertIsInstance(cli, CLI)
+        self.assertIsInstance(cli, CLIWrapper)
         self.assertEqual(cli.app_name, "TestApp")
         self.assertEqual(cli.app_description, "")
         self.assertEqual(cli.version, "1.0.0")
         self.assertIsNone(cli.ascii_art)
 
     def test_create_cli_custom_params(self):
-        """Test creating CLI with custom parameters."""
+        """Test creating CLIWrapper with custom parameters."""
         cli = create_cli(
             app_name="CustomApp",
             app_description="Custom description",
@@ -215,7 +215,7 @@ class TestCreateCLI(unittest.TestCase):
             ascii_art="Custom ASCII",
         )
 
-        self.assertIsInstance(cli, CLI)
+        self.assertIsInstance(cli, CLIWrapper)
         self.assertEqual(cli.app_name, "CustomApp")
         self.assertEqual(cli.app_description, "Custom description")
         self.assertEqual(cli.version, "2.0.0")
@@ -223,14 +223,14 @@ class TestCreateCLI(unittest.TestCase):
 
 
 class TestCLIIntegration(unittest.TestCase):
-    """Integration test cases for CLI functionality."""
+    """Integration test cases for CLIWrapper functionality."""
 
     def test_standard_commands_added(self) -> None:
         """Test that standard commands are properly added."""
-        cli = CLI("TestApp")
+        cli = CLIWrapper("TestApp")
 
         # Check that the typer app exists and is properly initialized
         self.assertIsInstance(cli.app, typer.Typer)
 
-        # Test that CLI initialization completed successfully
+        # Test that CLIWrapper initialization completed successfully
         self.assertIsNotNone(cli.app)

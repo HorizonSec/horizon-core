@@ -11,7 +11,7 @@ from rich.table import Table
 from rich.text import Text
 
 
-class CLI:
+class CLIWrapper:
     """
     A standardized CLI framework for horizon-core modules.
     Provides consistent interface, styling, and interactive features.
@@ -195,7 +195,7 @@ def create_cli(
     app_description: str = "",
     version: str = "1.0.0",
     ascii_art: Optional[str] = None,
-) -> CLI:
+) -> CLIWrapper:
     """
     Factory function to create a CLI framework instance.
 
@@ -208,6 +208,6 @@ def create_cli(
     Returns:
         CLI instance ready for use
     """
-    return CLI(
+    return CLIWrapper(
         app_name=app_name, app_description=app_description, version=version, ascii_art=ascii_art
     )
