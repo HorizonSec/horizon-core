@@ -1,0 +1,11 @@
+{
+  "risk_appetite": {
+    "level": "medium",
+    "new_field_not_defined": true
+  },
+  "rules": {
+    "allow_margin_trading": true,
+    "unknown_setting": "xyz"
+  },
+  "extra_top_level_field": "should_be_ignored"
+}

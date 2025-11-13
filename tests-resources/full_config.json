@@ -1,0 +1,14 @@
+{
+  "risk_appetite": {
+    "level": "medium",
+    "max_investment_per_asset": 5000,
+    "stop_loss_threshold": 0.1
+  },
+  "rules": {
+    "enable_email_alerts": true,
+    "enable_sms_alerts": false,
+    "enable_web_hooks": true,
+    "allow_margin_trading": false
+  },
+  "opt_in_features": ["daily_summary", "portfolio_rebalancing"]
+}

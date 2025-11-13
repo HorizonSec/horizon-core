@@ -36,6 +36,34 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 ```
 
+## Current Config
+This module provides a lightweight and extensible configuration loader for user-defined settings.  
+It reads a local JSON file (default: `horizon_config.json`) and converts it into structured Python objects for easy access and validation.
+
+- Loads user configuration from `horizon_config.json` in the current directory.  
+- Uses Python `dataclasses` to map configuration sections into structured objects.  
+- Automatically applies safe defaults when fields or files are missing.  
+- Can optionally load configurations from a custom path.  
+- Simple and dependency-free — based entirely on the Python standard library.
+
+# Example Configuration File
+Create a file named `horizon_config.json` in your current working directory:
+
+```json
+{
+  "risk_appetite": {
+    "level": "medium",
+    "max_investment_per_asset": 5000,
+    "stop_loss_threshold": 0.1
+  },
+  "rules": {
+    "enable_email_alerts": true,
+    "enable_sms_alerts": false,
+    "allow_margin_trading": false
+  },
+  "opt_in_features": ["daily_summary", "portfolio_rebalancing"]
+}
+
 ## Security Best Practices
 
 1. **No secrets in logs**: Horizon Core automatically redacts sensitive data
