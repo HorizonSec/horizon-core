@@ -45,6 +45,16 @@ class RiskAppetite:
     max_investment_per_asset: float = 1000.0
     stop_loss_threshold: float = 0.05
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.level, str):
+            raise TypeError(f"'level' must be str, got {type(self.level).__name__}")
+        if not isinstance(self.max_investment_per_asset, (int, float)):
+            type_ = type(self.max_investment_per_asset)
+            raise TypeError(f"'max_investment_per_asset' must be float, got {type_.__name__}")
+        if not isinstance(self.stop_loss_threshold, (int, float)):
+            type_ = type(self.stop_loss_threshold)
+            raise TypeError(f"'stop_loss_threshold' must be float, got {type_.__name__}")
+
 
 @dataclass
 class Rules:
@@ -53,12 +63,43 @@ class Rules:
     enable_web_hooks: bool = False
     allow_margin_trading: bool = False
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.enable_email_alerts, bool):
+            raise TypeError(
+                f"'enable_email_alerts' must be bool, got {type(self.enable_email_alerts).__name__}"
+            )
+        if not isinstance(self.enable_sms_alerts, bool):
+            raise TypeError(
+                f"'enable_sms_alerts' must be bool, got {type(self.enable_sms_alerts).__name__}"
+            )
+        if not isinstance(self.enable_web_hooks, bool):
+            raise TypeError(
+                f"'enable_web_hooks' must be bool, got {type(self.enable_web_hooks).__name__}"
+            )
+        if not isinstance(self.allow_margin_trading, bool):
+            type_ = type(self.allow_margin_trading)
+            raise TypeError(f"'allow_margin_trading' must be bool, got {type_.__name__}")
+
 
 @dataclass
 class Config:
     risk_appetite: RiskAppetite = field(default_factory=RiskAppetite)
     rules: Rules = field(default_factory=Rules)
     opt_in_features: List[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.risk_appetite, RiskAppetite):
+            raise TypeError(
+                f"'risk_appetite' must be RiskAppetite, got {type(self.risk_appetite).__name__}"
+            )
+        if not isinstance(self.rules, Rules):
+            raise TypeError(f"'rules' must be Rules, got {type(self.rules).__name__}")
+        if not isinstance(self.opt_in_features, list):
+            raise TypeError(
+                f"'opt_in_features' must be list, got {type(self.opt_in_features).__name__}"
+            )
+        if not all(isinstance(item, str) for item in self.opt_in_features):
+            raise TypeError("All items in 'opt_in_features' must be str")
 
 
 def _load_json(path: str) -> Dict[str, Any]:
@@ -67,7 +108,7 @@ def _load_json(path: str) -> Dict[str, Any]:
         print(f"Warning: Config file not found at {path}")
         return {}
     with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+        return json.load(f)  # type: ignore[no-any-return]
 
 
 def load_config(config_path: Optional[str] = None) -> Config:

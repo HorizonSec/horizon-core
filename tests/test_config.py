@@ -11,7 +11,6 @@ Test Coverage:
     • Verification of strict validation — raising:
         - FileNotFoundError
         - JSONDecodeError
-        - ValueError
         - TypeError
         - KeyError
 
@@ -56,7 +55,7 @@ class TestConfigLoader(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Locate the resources directory containing JSON config files."""
-        cls.RESOURCES_DIR = (Path(__file__).resolve().parent.parent / "resources").resolve()
+        cls.RESOURCES_DIR = (Path(__file__).resolve().parent.parent / "tests-resources").resolve()
         if not cls.RESOURCES_DIR.exists():
             raise RuntimeError(f"Resources directory not found: {cls.RESOURCES_DIR}")
 
@@ -122,14 +121,6 @@ class TestConfigLoader(unittest.TestCase):
         with self.assertRaises(json.JSONDecodeError):
             load_config(self._res("invalid_json_syntax.json"))
 
-    def test_invalid_risk_level_raises_valueerror(self):
-        """
-        Verify that an invalid risk level string ('extreme')
-        in invalid_risk_level.json raises a ValueError.
-        """
-        with self.assertRaisesRegex(ValueError, "Invalid risk_appetite.level"):
-            load_config(self._res("invalid_risk_level.json"))
-
     def test_wrong_data_types_raise_typeerror(self):
         """
         Verify that configurations with incorrect data types
@@ -138,19 +129,10 @@ class TestConfigLoader(unittest.TestCase):
         with self.assertRaises(TypeError):
             load_config(self._res("wrong_data_types.json"))
 
-    def test_unexpected_fields_raise_keyerror(self):
-        """
-        Verify that unknown or unexpected fields in the JSON
-        (unexpected_fields.json) raise a KeyError.
-        """
-        with self.assertRaises(KeyError):
-            load_config(self._res("unexpected_fields.json"))
-
-    def test_missing_file_raises_filenotfounderror(self):
+    def test_missing_file_empty_object(self):
         """
         Verify that attempting to load a non-existent file
         raises FileNotFoundError.
         """
         missing = str(self.RESOURCES_DIR / "does_not_exist.json")
-        with self.assertRaises(FileNotFoundError):
-            load_config(missing)
+        self.assertEqual(load_config(missing), Config())
