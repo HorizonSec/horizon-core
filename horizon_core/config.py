@@ -31,13 +31,13 @@ USAGE:
    If not found, it uses defaults defined in the dataclasses below.
 """
 
-import os
 import json
+import os
 from dataclasses import dataclass, field
-from typing import List, Dict, Any, Optional
-
+from typing import Any, Dict, List, Optional
 
 # TODO - move these into model directory
+
 
 @dataclass
 class RiskAppetite:
@@ -52,6 +52,7 @@ class Rules:
     enable_sms_alerts: bool = False
     enable_web_hooks: bool = False
     allow_margin_trading: bool = False
+
 
 @dataclass
 class Config:
@@ -85,8 +86,4 @@ def load_config(config_path: Optional[str] = None) -> Config:
     rules = Rules(**user_data.get("rules", {}))
     opt_in_features = user_data.get("opt_in_features", [])
 
-    return Config(
-        risk_appetite=risk_appetite,
-        rules=rules,
-        opt_in_features=opt_in_features
-    )
+    return Config(risk_appetite=risk_appetite, rules=rules, opt_in_features=opt_in_features)
