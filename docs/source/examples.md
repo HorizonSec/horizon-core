@@ -16,9 +16,12 @@ from horizon_core.reporting.models.ocsf import (
     SeverityID,
     Status,
     StatusID,
-    Metadata
+    Metadata,
+    ActivityID,
+    FindingInfo
 )
 from datetime import datetime
+from dataclasses import asdict
 
 # Create a basic vulnerability finding
 finding = VulnerabilityFinding(
@@ -28,6 +31,9 @@ finding = VulnerabilityFinding(
     ),
     time=datetime.now(),
     severity_id=SeverityID.HIGH,
+    type_uid=200201,  # Vulnerability Finding Create
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(uid="vuln-001"),
     severity=Severity.HIGH,
     status_id=StatusID.NEW,
     status=Status.NEW,
@@ -46,7 +52,7 @@ finding = VulnerabilityFinding(
 )
 
 # Convert to dictionary for JSON serialization
-finding_dict = finding.to_dict()
+finding_dict = asdict(finding)
 print(f"Vulnerability finding: {finding_dict}")
 ```
 
@@ -57,28 +63,27 @@ from horizon_core.reporting.models.ocsf import (
     ComplianceFinding,
     FindingInfo,
     ActivityID,
+    SeverityID,
     Metadata
 )
 from datetime import datetime
+from dataclasses import asdict
 
 # Create a compliance finding
 compliance_finding = ComplianceFinding(
     metadata=Metadata(version="1.3.0"),
+    severity_id=SeverityID.MEDIUM,
     time=datetime.now(),
+    type_uid=200301,  # Compliance Finding Create
     activity_id=ActivityID.CREATE,
     finding_info=FindingInfo(
         title="PCI DSS Compliance Violation",
         desc="Credit card data stored in plain text without encryption",
         uid="COMP-2024-001"
-    ),
-    compliance={
-        "requirements": ["PCI DSS 3.2.1 Requirement 3.4"],
-        "controls": ["Data Protection"],
-        "status": "Non-Compliant"
-    }
+    )
 )
 
-print(f"Compliance finding: {compliance_finding.to_dict()}")
+print(f"Compliance finding: {asdict(compliance_finding)}")
 ```
 
 ### Detection Finding
@@ -88,39 +93,26 @@ from horizon_core.reporting.models.ocsf import (
     DetectionFinding,
     FindingInfo,
     ActivityID,
-    Metadata,
-    File,
-    User
+    SeverityID,
+    Metadata
 )
 from datetime import datetime
+from dataclasses import asdict
 
 # Create a detection finding
 detection_finding = DetectionFinding(
     metadata=Metadata(version="1.3.0"),
+    severity_id=SeverityID.HIGH,
     time=datetime.now(),
+    type_uid=200401,  # Detection Finding Create
     activity_id=ActivityID.CREATE,
     finding_info=FindingInfo(
         title="Malicious File Detected",
         desc="Suspicious executable detected in user directory"
-    ),
-    resources=[
-        File(
-            name="malicious.exe",
-            path="/home/user/downloads/malicious.exe",
-            size=1024000,
-            hashes={
-                "MD5": "5d41402abc4b2a76b9719d911017c592",
-                "SHA256": "e3b0c44298fc1c149afbf4c8996fb924"
-            }
-        )
-    ],
-    actor=User(
-        name="suspicious_user",
-        uid="1001"
     )
 )
 
-print(f"Detection finding: {detection_finding.to_dict()}")
+print(f"Detection finding: {asdict(detection_finding)}")
 ```
 
 ### Complex Vulnerability with Affected Packages
@@ -133,14 +125,22 @@ from horizon_core.reporting.models.ocsf import (
     CVE,
     CVSS,
     CWE,
-    Metadata
+    Metadata,
+    ActivityID,
+    SeverityID,
+    FindingInfo
 )
 from datetime import datetime
+from dataclasses import asdict
 
 # Create a complex vulnerability finding with affected packages
 complex_finding = VulnerabilityFinding(
     metadata=Metadata(version="1.3.0"),
     time=datetime.now(),
+    severity_id=SeverityID.CRITICAL,
+    type_uid=200201,  # Vulnerability Finding Create
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(uid="complex-vuln-001"),
     vulnerabilities=[
         Vulnerability(
             title="Remote Code Execution in OpenSSL",
@@ -161,21 +161,19 @@ complex_finding = VulnerabilityFinding(
                 AffectedPackage(
                     name="openssl",
                     version="1.1.1k",
-                    architecture="x86_64",
-                    package_manager="apt"
+                    architecture="x86_64"
                 ),
                 AffectedPackage(
                     name="libssl1.1",
                     version="1.1.1k-1ubuntu1.2",
-                    architecture="x86_64",
-                    package_manager="apt"
+                    architecture="x86_64"
                 )
             ]
         )
     ]
 )
 
-print(f"Complex vulnerability: {complex_finding.to_dict()}")
+print(f"Complex vulnerability: {asdict(complex_finding)}")
 ```
 
 ### Real-World Security Scanner Integration
@@ -188,9 +186,12 @@ from horizon_core.reporting.models.ocsf import (
     CVSS,
     Metadata,
     SeverityID,
-    StatusID
+    StatusID,
+    ActivityID,
+    FindingInfo
 )
 from datetime import datetime
+from dataclasses import asdict
 import json
 
 class SecurityScanner:
@@ -227,7 +228,9 @@ class SecurityScanner:
             ),
             time=datetime.now(),
             severity_id=SeverityID(scan_results.get('severity_id', 1)),
-            status_id=StatusID.NEW,
+            type_uid=200201,  # Vulnerability Finding Create
+            activity_id=ActivityID.CREATE,
+            finding_info=FindingInfo(uid=f"scan-{datetime.now().timestamp()}"),
             vulnerabilities=vulnerabilities
         )
         
@@ -235,7 +238,7 @@ class SecurityScanner:
     
     def export_findings(self, findings: list, filename: str):
         """Export findings to JSON file."""
-        findings_data = [finding.to_dict() for finding in findings]
+        findings_data = [asdict(finding) for finding in findings]
         
         with open(filename, 'w') as f:
             json.dump(findings_data, f, indent=2, default=str)

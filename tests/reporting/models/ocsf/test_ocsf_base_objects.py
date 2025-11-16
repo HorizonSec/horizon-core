@@ -167,11 +167,11 @@ class TestFile(unittest.TestCase):
         file_obj = File(name="test.txt", type_id=1)
 
         self.assertEqual(file_obj.name, "test.txt")
-        assert file_obj.type_id == 1
-        assert file_obj.confidentiality is None
-        assert file_obj.confidentiality_id is None
-        assert file_obj.created_time is None
-        assert file_obj.desc is None
+        self.assertEqual(file_obj.type_id, 1)
+        self.assertIsNone(file_obj.confidentiality)
+        self.assertIsNone(file_obj.confidentiality_id)
+        self.assertIsNone(file_obj.created_time)
+        self.assertIsNone(file_obj.desc)
 
     def test_file_creation_full(self):
         """Test creating a File with all fields populated."""
@@ -200,47 +200,47 @@ class TestFile(unittest.TestCase):
             xattributes={"custom": "value"},
         )
 
-        assert file_obj.name == "document.pdf"
-        assert file_obj.type_id == 2
-        assert file_obj.confidentiality == "Public"
-        assert file_obj.confidentiality_id == 1
-        assert file_obj.created_time == created_time
-        assert file_obj.desc == "Important document"
-        assert file_obj.mime_type == "application/pdf"
-        assert file_obj.modified_time == modified_time
-        assert file_obj.owner == owner
-        assert file_obj.parent_folder == "/home/user/documents"
-        assert file_obj.path == "/home/user/documents/document.pdf"
-        assert file_obj.security_descriptor == "rw-r--r--"
-        assert file_obj.signature == {"algorithm": "SHA256", "value": "abc123"}
-        assert file_obj.size == 1024
-        assert file_obj.type == "PDF Document"
-        assert file_obj.uid == "file-123"
-        assert file_obj.version == "1.0"
-        assert file_obj.xattributes == {"custom": "value"}
+        self.assertEqual(file_obj.name, "document.pdf")
+        self.assertEqual(file_obj.type_id, 2)
+        self.assertEqual(file_obj.confidentiality, "Public")
+        self.assertEqual(file_obj.confidentiality_id, 1)
+        self.assertEqual(file_obj.created_time, created_time)
+        self.assertEqual(file_obj.desc, "Important document")
+        self.assertEqual(file_obj.mime_type, "application/pdf")
+        self.assertEqual(file_obj.modified_time, modified_time)
+        self.assertEqual(file_obj.owner, owner)
+        self.assertEqual(file_obj.parent_folder, "/home/user/documents")
+        self.assertEqual(file_obj.path, "/home/user/documents/document.pdf")
+        self.assertEqual(file_obj.security_descriptor, "rw-r--r--")
+        self.assertEqual(file_obj.signature, {"algorithm": "SHA256", "value": "abc123"})
+        self.assertEqual(file_obj.size, 1024)
+        self.assertEqual(file_obj.type, "PDF Document")
+        self.assertEqual(file_obj.uid, "file-123")
+        self.assertEqual(file_obj.version, "1.0")
+        self.assertEqual(file_obj.xattributes, {"custom": "value"})
 
     def test_file_datetime_handling(self):
         """Test that File properly handles datetime objects."""
         now = datetime.now()
         file_obj = File(name="test.txt", type_id=1, created_time=now, modified_time=now)
 
-        assert file_obj.created_time == now
-        assert file_obj.modified_time == now
-        assert isinstance(file_obj.created_time, datetime)
-        assert isinstance(file_obj.modified_time, datetime)
+        self.assertEqual(file_obj.created_time, now)
+        self.assertEqual(file_obj.modified_time, now)
+        self.assertIsInstance(file_obj.created_time, datetime)
+        self.assertIsInstance(file_obj.modified_time, datetime)
 
 
-class TestMetadata:
+class TestMetadata(unittest.TestCase):
     """Test cases for Metadata object."""
 
     def test_metadata_creation_minimal(self):
         """Test creating Metadata with minimal required fields."""
         metadata = Metadata(version="1.3.0")
 
-        assert metadata.version == "1.3.0"
-        assert metadata.product is None
-        assert metadata.profiles == []
-        assert metadata.event_code is None
+        self.assertEqual(metadata.version, "1.3.0")
+        self.assertIsNone(metadata.product)
+        self.assertEqual(metadata.profiles, [])
+        self.assertIsNone(metadata.event_code)
 
     def test_metadata_creation_full(self):
         """Test creating Metadata with all fields populated."""
@@ -266,35 +266,35 @@ class TestMetadata:
             uid="event-456",
         )
 
-        assert metadata.version == "1.3.0"
-        assert metadata.product == product
-        assert metadata.profiles == ["security", "compliance"]
-        assert metadata.event_code == "SEC001"
-        assert metadata.log_name == "security.log"
-        assert metadata.log_provider == "SecuritySystem"
-        assert metadata.log_level == "INFO"
-        assert metadata.logged_time == logged_time
-        assert metadata.modified_time == modified_time
-        assert metadata.original_time == "2024-01-01T12:00:00Z"
-        assert metadata.processed_time == processed_time
-        assert metadata.sequence == 12345
-        assert metadata.tenant_uid == "tenant-123"
-        assert metadata.uid == "event-456"
+        self.assertEqual(metadata.version, "1.3.0")
+        self.assertEqual(metadata.product, product)
+        self.assertEqual(metadata.profiles, ["security", "compliance"])
+        self.assertEqual(metadata.event_code, "SEC001")
+        self.assertEqual(metadata.log_name, "security.log")
+        self.assertEqual(metadata.log_provider, "SecuritySystem")
+        self.assertEqual(metadata.log_level, "INFO")
+        self.assertEqual(metadata.logged_time, logged_time)
+        self.assertEqual(metadata.modified_time, modified_time)
+        self.assertEqual(metadata.original_time, "2024-01-01T12:00:00Z")
+        self.assertEqual(metadata.processed_time, processed_time)
+        self.assertEqual(metadata.sequence, 12345)
+        self.assertEqual(metadata.tenant_uid, "tenant-123")
+        self.assertEqual(metadata.uid, "event-456")
 
     def test_metadata_profiles_default(self):
         """Test that profiles defaults to empty list."""
         metadata = Metadata(version="1.3.0")
-        assert isinstance(metadata.profiles, list)
-        assert len(metadata.profiles) == 0
+        self.assertIsInstance(metadata.profiles, list)
+        self.assertEqual(len(metadata.profiles), 0)
 
     def test_metadata_version_requirement(self):
         """Test that version is required for Metadata."""
         # This should work
         metadata = Metadata(version="1.3.0")
-        assert metadata.version == "1.3.0"
+        self.assertEqual(metadata.version, "1.3.0")
 
 
-class TestObjectIntegration:
+class TestObjectIntegration(unittest.TestCase):
     """Integration tests for object relationships."""
 
     def test_user_with_account_and_groups(self):
@@ -313,11 +313,11 @@ class TestObjectIntegration:
             uid="user-admin-001",
         )
 
-        assert user.account.name == "corporate-account"
-        assert len(user.groups) == 2
-        assert user.groups[0].name == "administrators"
-        assert user.groups[1].name == "users"
-        assert "admin" in user.groups[0].privileges
+        self.assertEqual(user.account.name, "corporate-account")
+        self.assertEqual(len(user.groups), 2)
+        self.assertEqual(user.groups[0].name, "administrators")
+        self.assertEqual(user.groups[1].name, "users")
+        self.assertIn("admin", user.groups[0].privileges)
 
     def test_file_with_owner(self):
         """Test File with associated User owner."""
@@ -325,8 +325,8 @@ class TestObjectIntegration:
 
         file_obj = File(name="owned_file.txt", type_id=1, owner=owner, path="/home/file_owner/owned_file.txt")
 
-        assert file_obj.owner.name == "file_owner"
-        assert file_obj.owner.uid == "owner-123"
+        self.assertEqual(file_obj.owner.name, "file_owner")
+        self.assertEqual(file_obj.owner.uid, "owner-123")
 
     def test_complex_metadata_object(self):
         """Test Metadata with complex nested product information."""
@@ -341,8 +341,8 @@ class TestObjectIntegration:
             version="1.3.0", product=product, profiles=["enterprise", "compliance", "audit"], sequence=999999
         )
 
-        assert metadata.product["name"] == "Advanced Security Platform"
-        assert metadata.product["version"] == "3.2.1"
-        assert "threat_detection" in metadata.product["features"]
-        assert "enterprise" in metadata.profiles
-        assert metadata.sequence == 999999
+        self.assertEqual(metadata.product["name"], "Advanced Security Platform")
+        self.assertEqual(metadata.product["version"], "3.2.1")
+        self.assertIn("threat_detection", metadata.product["features"])
+        self.assertIn("enterprise", metadata.profiles)
+        self.assertEqual(metadata.sequence, 999999)

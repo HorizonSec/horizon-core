@@ -45,7 +45,7 @@ Quick Start
 
    from horizon_core.reporting.models.ocsf import (
        VulnerabilityFinding, Vulnerability, CVE, CVSS,
-       Severity, SeverityID, Metadata
+       Severity, SeverityID, Metadata, ActivityID, FindingInfo
    )
    from datetime import datetime
 
@@ -54,7 +54,9 @@ Quick Start
        metadata=Metadata(version="1.3.0"),
        time=datetime.now(),
        severity_id=SeverityID.HIGH,
-       severity=Severity.HIGH,
+       type_uid=200201,  # Vulnerability Finding Create
+       activity_id=ActivityID.CREATE,
+       finding_info=FindingInfo(uid="vuln-001"),
        vulnerabilities=[
            Vulnerability(
                title="Critical SQL Injection",

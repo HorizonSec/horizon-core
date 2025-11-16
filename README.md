@@ -121,7 +121,9 @@ from horizon_core.reporting.models.ocsf import (
     SeverityID,
     Status,
     StatusID,
-    Metadata
+    Metadata,
+    ActivityID,
+    FindingInfo
 )
 from datetime import datetime
 
@@ -132,10 +134,16 @@ finding = VulnerabilityFinding(
         product={"name": "HorizonSec Scanner", "version": "2.0.0"}
     ),
     time=datetime.now(),
+    type_uid=1001,  # Required: OCSF type identifier for vulnerability findings
+    activity_id=ActivityID.CREATE,  # Required: Activity being performed
     severity_id=SeverityID.HIGH,
     severity=Severity.HIGH,
     status_id=StatusID.NEW,
     status=Status.NEW,
+    finding_info=FindingInfo(  # Required: Core finding information
+        title="Critical SQL Injection Vulnerability",
+        desc="SQL injection vulnerability detected in user login form"
+    ),
     vulnerabilities=[
         Vulnerability(
             title="Critical SQL Injection",
@@ -151,7 +159,8 @@ finding = VulnerabilityFinding(
 )
 
 # Convert to dictionary for JSON serialization
-finding_dict = finding.to_dict()
+from dataclasses import asdict
+finding_dict = asdict(finding)
 ```
 
 #### Compliance and Detection Findings
@@ -168,7 +177,9 @@ from horizon_core.reporting.models.ocsf import (
 compliance_finding = ComplianceFinding(
     metadata=Metadata(version="1.3.0"),
     time=datetime.now(),
+    type_uid=2001,  # Required: OCSF type identifier for compliance findings
     activity_id=ActivityID.CREATE,
+    severity_id=SeverityID.MEDIUM,
     finding_info=FindingInfo(
         title="PCI DSS Compliance Violation",
         desc="Credit card data stored without encryption"
@@ -179,7 +190,9 @@ compliance_finding = ComplianceFinding(
 detection_finding = DetectionFinding(
     metadata=Metadata(version="1.3.0"),
     time=datetime.now(),
+    type_uid=2004,  # Required: OCSF type identifier for detection findings
     activity_id=ActivityID.CREATE,
+    severity_id=SeverityID.HIGH,
     finding_info=FindingInfo(
         title="Malware Detection",
         desc="Suspicious file behavior detected"
