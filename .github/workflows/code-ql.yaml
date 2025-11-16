@@ -1,0 +1,43 @@
+name: "CodeQL"
+
+# Run on PRs that target mainline and on pushes to mainline (covers merges)
+on:
+  pull_request:
+    branches:
+      - "mainline"
+  push:
+    branches:
+      - "mainline"
+
+# Required permissions for uploading code scanning results
+permissions:
+  actions: read
+  checks: write
+  contents: read
+  security-events: write
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+
+      - name: Perform autobuild (if needed)
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Run CodeQL analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          output: results.sarif

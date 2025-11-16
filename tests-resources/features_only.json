@@ -1,0 +1,3 @@
+{
+  "opt_in_features": ["daily_summary", "alpha_feature", "portfolio_rebalancing"]
+}

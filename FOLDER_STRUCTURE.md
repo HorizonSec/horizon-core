@@ -50,6 +50,16 @@ horizon-core/
 │               ├── test_ocsf_events.py
 │               ├── test_ocsf_finding_objects.py
 │               └── test_ocsf_vulnerability_objects.py
+│   ├── test_sarif.py               # Empty file (tests removed)
+│   └── test_config.py              # Empty file (tests removed)
+├── tests-resources/                # Unit tests resources
+│  ├─ empty_file.json
+│  ├─ features_only.json
+│  ├─ full_config.json
+│  ├─ invalid_json_syntax.json
+│  ├─ invalid_unexpected_fields.json
+│  ├─ partial_config.json
+│  └─ wrong_data_types.json
 ├── .gitignore                       # Git ignore patterns
 ├── CODE_OF_CONDUCT.md               # Community code of conduct
 ├── CONTRIBUTING.md                  # Contribution guidelines
