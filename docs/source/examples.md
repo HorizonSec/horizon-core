@@ -18,6 +18,7 @@ from horizon_core.reporting.models.ocsf import (
     StatusID,
     Metadata
 )
+from dataclasses import asdict
 from datetime import datetime
 
 # Create a basic vulnerability finding
@@ -46,7 +47,7 @@ finding = VulnerabilityFinding(
 )
 
 # Convert to dictionary for JSON serialization
-finding_dict = finding.to_dict()
+finding_dict = asdict(finding)
 print(f"Vulnerability finding: {finding_dict}")
 ```
 
@@ -59,6 +60,7 @@ from horizon_core.reporting.models.ocsf import (
     ActivityID,
     Metadata
 )
+from dataclasses import asdict
 from datetime import datetime
 
 # Create a compliance finding
@@ -78,7 +80,7 @@ compliance_finding = ComplianceFinding(
     }
 )
 
-print(f"Compliance finding: {compliance_finding.to_dict()}")
+print(f"Compliance finding: {asdict(compliance_finding)}")
 ```
 
 ### Detection Finding
@@ -92,6 +94,7 @@ from horizon_core.reporting.models.ocsf import (
     File,
     User
 )
+from dataclasses import asdict
 from datetime import datetime
 
 # Create a detection finding
@@ -120,7 +123,7 @@ detection_finding = DetectionFinding(
     )
 )
 
-print(f"Detection finding: {detection_finding.to_dict()}")
+print(f"Detection finding: {asdict(detection_finding)}")
 ```
 
 ### Complex Vulnerability with Affected Packages
@@ -135,6 +138,7 @@ from horizon_core.reporting.models.ocsf import (
     CWE,
     Metadata
 )
+from dataclasses import asdict
 from datetime import datetime
 
 # Create a complex vulnerability finding with affected packages
@@ -175,7 +179,7 @@ complex_finding = VulnerabilityFinding(
     ]
 )
 
-print(f"Complex vulnerability: {complex_finding.to_dict()}")
+print(f"Complex vulnerability: {asdict(complex_finding)}")
 ```
 
 ### Real-World Security Scanner Integration
@@ -190,6 +194,7 @@ from horizon_core.reporting.models.ocsf import (
     SeverityID,
     StatusID
 )
+from dataclasses import asdict
 from datetime import datetime
 import json
 
@@ -235,7 +240,7 @@ class SecurityScanner:
     
     def export_findings(self, findings: list, filename: str):
         """Export findings to JSON file."""
-        findings_data = [finding.to_dict() for finding in findings]
+        findings_data = [asdict(finding) for finding in findings]
         
         with open(filename, 'w') as f:
             json.dump(findings_data, f, indent=2, default=str)
