@@ -21,16 +21,35 @@ horizon-core/
 │   └── README.md                   # Documentation index
 ├── horizon_core/                    # Main Python package
 │   ├── __init__.py                 # Package initialization (exports setup_logger)
-│   ├── cli_framework.py            # Empty file (functionality removed)
-│   ├── logging.py                  # Secure logging utilities with data redaction
-│   ├── sarif.py                    # Empty file (functionality removed)
-│   └── config.py                   # Empty file (functionality removed)
+│   ├── cli_wrapper.py              # CLI framework utilities
+│   ├── config.py                   # Configuration management utilities
+│   ├── logger.py                   # Secure logging utilities with data redaction
+│   └── reporting/                  # Reporting framework
+│       └── models/                 # Data models
+│           ├── __init__.py
+│           └── ocsf/               # OCSF (Open Cybersecurity Schema Framework) models
+│               ├── __init__.py     # OCSF package initialization
+│               ├── base_objects.py # Base OCSF objects (Account, User, File, etc.)
+│               ├── enums.py        # OCSF enumerations (Severity, Status, etc.)
+│               ├── events.py       # OCSF event classes (VulnerabilityFinding, etc.)
+│               ├── finding_objects.py # Finding-specific objects
+│               └── vulnerability_objects.py # Vulnerability-specific objects
 ├── tests/                           # Unit and integration tests
 │   ├── __init__.py
-│   ├── test_cli_framework.py       # Empty file (tests removed)
+│   ├── test_cli_wrapper.py         # Tests for CLI framework
+│   ├── test_config.py              # Tests for configuration module
 │   ├── test_logging.py             # Comprehensive tests for logging module
-│   ├── test_sarif.py               # Empty file (tests removed)
-│   └── test_config.py              # Empty file (tests removed)
+│   └── reporting/                  # Tests for reporting framework
+│       ├── __init__.py
+│       └── models/                 # Tests for data models
+│           ├── __init__.py
+│           └── ocsf/               # Tests for OCSF models
+│               ├── __init__.py
+│               ├── test_ocsf_base_objects.py
+│               ├── test_ocsf_enums.py
+│               ├── test_ocsf_events.py
+│               ├── test_ocsf_finding_objects.py
+│               └── test_ocsf_vulnerability_objects.py
 ├── .gitignore                       # Git ignore patterns
 ├── CODE_OF_CONDUCT.md               # Community code of conduct
 ├── CONTRIBUTING.md                  # Contribution guidelines
@@ -103,31 +122,47 @@ Contains all GitHub-specific configuration files:
 ### Source Code Directories
 
 #### `horizon_core/`
-The main Python package containing secure logging utilities:
+The main Python package containing secure logging utilities, CLI framework, and OCSF models:
 
 - **`__init__.py`**: Package initialization and public API exports
   - Exports `setup_logger` function for creating secure loggers
-- **`logging.py`**: Secure logging utilities with automatic sensitive data redaction
+- **`logger.py`**: Secure logging utilities with automatic sensitive data redaction
   - `SecureLogger` class that extends standard Python logging
   - `SensitiveDataFormatter` that redacts sensitive information from log messages
   - `setup_logger()` function for easy logger configuration
   - Automatic detection and redaction of passwords, API keys, tokens, and other sensitive data
-- **`cli_framework.py`**: Empty file (functionality removed in refactor)
-- **`sarif.py`**: Empty file (functionality removed in refactor)
-- **`config.py`**: Empty file (functionality removed in refactor)
+- **`cli_wrapper.py`**: CLI framework utilities
+  - `CLIWrapper` class for creating standardized CLI applications
+  - Rich console output with styling and interactive mode
+  - Integration with typer for command-line argument parsing
+- **`config.py`**: Configuration management utilities
+- **`reporting/models/ocsf/`**: OCSF (Open Cybersecurity Schema Framework) data models
+  - `base_objects.py`: Core OCSF objects like Account, User, File, Group, Metadata
+  - `enums.py`: OCSF enumerations including Severity, Status, Confidence, ActivityID
+  - `events.py`: Main OCSF event classes for VulnerabilityFinding, ComplianceFinding, DetectionFinding
+  - `finding_objects.py`: Finding-specific objects like FindingInfo
+  - `vulnerability_objects.py`: Vulnerability-related objects including CVE, CVSS, CWE, AffectedPackage, Vulnerability
 
 #### `tests/`
 Contains all test files for the project:
-- `test_logging.py`: Comprehensive tests for secure logging functionality including:
+- **`test_logging.py`**: Comprehensive tests for secure logging functionality including:
   - Tests for `SecureLogger` class methods
   - Tests for `SensitiveDataFormatter` redaction patterns
   - Tests for `setup_logger` function
   - Edge cases and error handling tests
-- `test_cli_framework.py`: Empty file (tests removed in refactor)
-- `test_sarif.py`: Empty file (tests removed in refactor)  
-- `test_config.py`: Empty file (tests removed in refactor)
+- **`test_cli_wrapper.py`**: Tests for CLI framework functionality
+  - Tests for `CLIWrapper` class
+  - Command registration and execution tests
+  - Interactive mode tests
+- **`test_config.py`**: Tests for configuration management utilities
+- **`reporting/models/ocsf/`**: Tests for OCSF models including:
+  - `test_ocsf_base_objects.py`: Tests for base OCSF objects
+  - `test_ocsf_enums.py`: Tests for OCSF enumerations
+  - `test_ocsf_events.py`: Tests for OCSF event classes
+  - `test_ocsf_finding_objects.py`: Tests for finding objects
+  - `test_ocsf_vulnerability_objects.py`: Tests for vulnerability objects
 
-Tests use pytest and aim for comprehensive coverage of the logging module.
+Tests use pytest and aim for comprehensive coverage of all modules.
 
 #### `docs/`
 Contains additional documentation beyond the root-level markdown files:

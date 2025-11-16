@@ -1,6 +1,6 @@
 # Horizon Core Documentation
 
-Welcome to the **Horizon Core** documentation! This library provides shared utilities and framework components for HorizonSec tools, including secure logging with automatic sensitive data redaction and a standardized CLI framework.
+Welcome to the **Horizon Core** documentation! This library provides shared utilities and framework components for HorizonSec tools, including secure logging with automatic sensitive data redaction, a standardized CLI framework, and comprehensive OCSF (Open Cybersecurity Schema Framework) models for security event reporting.
 
 Quick Start
 -----------
@@ -39,11 +39,39 @@ Quick Start
    if __name__ == "__main__":
        cli.run()
 
+### OCSF Models
+
+.. code-block:: python
+
+   from horizon_core.reporting.models.ocsf import (
+       VulnerabilityFinding, Vulnerability, CVE, CVSS,
+       Severity, SeverityID, Metadata
+   )
+   from datetime import datetime
+
+   # Create a structured vulnerability finding
+   finding = VulnerabilityFinding(
+       metadata=Metadata(version="1.3.0"),
+       time=datetime.now(),
+       severity_id=SeverityID.HIGH,
+       severity=Severity.HIGH,
+       vulnerabilities=[
+           Vulnerability(
+               title="Critical SQL Injection",
+               cve=CVE(uid="CVE-2024-12345"),
+               cvss=CVSS(base_score=9.8, version="3.1")
+           )
+       ]
+   )
+
 Key Features
 ------------
 
 - **Secure Logging**: Automatic redaction of passwords, API keys, tokens, and other sensitive data
 - **CLI Framework**: Standardized command-line interface with consistent styling and interactive mode
+- **OCSF Models**: Complete Open Cybersecurity Schema Framework data models for security event reporting
+- **Vulnerability Management**: Structured models for CVE, CVSS, and vulnerability findings
+- **Compliance Reporting**: Built-in support for compliance and detection findings
 - **Rich Console Output**: Beautiful, styled console output with colors and formatting
 - **Interactive Mode**: Guided menu-driven interface for improved usability
 - **Security First**: Built-in protections to prevent sensitive information leaks

@@ -5,14 +5,24 @@
 
 ## Overview
 
-Welcome to the **Horizon Core** repository! This is the core library providing shared utilities and framework components for the HorizonSec organization, including secure logging with automatic sensitive data redaction and a standardized CLI framework for building consistent command-line tools.
+Welcome to the **Horizon Core** repository! This is the core library providing shared utilities and framework components for the HorizonSec organization, including secure logging with automatic sensitive data redaction, a standardized CLI framework for building consistent command-line tools, and comprehensive OCSF (Open Cybersecurity Schema Framework) models for structured security event reporting.
+
+### Recent Updates (v1.3.0)
+
+- **NEW**: Added comprehensive OCSF (Open Cybersecurity Schema Framework) models for standardized security event reporting
+- **NEW**: Support for vulnerability findings, compliance findings, and detection findings
+- **NEW**: Structured data models for CVE, CVSS, CWE, and affected packages
+- **BREAKING**: Removed SARIF support in favor of OCSF standard
+- **IMPROVEMENT**: Updated code formatting with increased line length (100→120 characters)
+- **ENHANCEMENT**: Expanded test coverage for all new OCSF models
 
 This repository includes:
 - **CLI Framework**: Standardized command-line interface framework with rich styling and interactive features
 - **SecureLogger**: A logging system that automatically redacts sensitive information
 - **SensitiveDataFormatter**: A formatter that prevents sensitive data leaks in logs  
 - **Configuration Management**: Utilities for handling application configuration
-- **SARIF Support**: Schema definitions for Static Analysis Results Interchange Format
+- **OCSF Models**: Comprehensive Open Cybersecurity Schema Framework (OCSF) data models for security event reporting
+- **Reporting Framework**: Structured models for vulnerability findings, compliance findings, and detection findings
 - Comprehensive documentation (README, CONTRIBUTING, CODE_OF_CONDUCT)
 - Issue and pull request templates
 - GitHub Actions workflows for building, testing, and documentation
@@ -93,7 +103,89 @@ if __name__ == "__main__":
 
 ## Usage
 
-Horizon Core provides two main components: secure logging utilities and a CLI framework for building consistent command-line applications.
+Horizon Core provides three main components: secure logging utilities, a CLI framework for building consistent command-line applications, and OCSF models for structured security event reporting.
+
+### OCSF Models
+
+The OCSF (Open Cybersecurity Schema Framework) models provide standardized data structures for security event reporting, including vulnerability findings, compliance findings, and detection findings.
+
+#### Basic OCSF Usage
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    VulnerabilityFinding,
+    Vulnerability,
+    CVE,
+    CVSS,
+    Severity,
+    SeverityID,
+    Status,
+    StatusID,
+    Metadata
+)
+from datetime import datetime
+
+# Create a vulnerability finding
+finding = VulnerabilityFinding(
+    metadata=Metadata(
+        version="1.3.0",
+        product={"name": "HorizonSec Scanner", "version": "2.0.0"}
+    ),
+    time=datetime.now(),
+    severity_id=SeverityID.HIGH,
+    severity=Severity.HIGH,
+    status_id=StatusID.NEW,
+    status=Status.NEW,
+    vulnerabilities=[
+        Vulnerability(
+            title="Critical SQL Injection",
+            desc="SQL injection vulnerability in login form",
+            cve=CVE(uid="CVE-2024-12345"),
+            cvss=CVSS(
+                version="3.1",
+                base_score=9.8,
+                vector_string="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+            )
+        )
+    ]
+)
+
+# Convert to dictionary for JSON serialization
+finding_dict = finding.to_dict()
+```
+
+#### Compliance and Detection Findings
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    ComplianceFinding,
+    DetectionFinding,
+    FindingInfo,
+    ActivityID
+)
+
+# Create a compliance finding
+compliance_finding = ComplianceFinding(
+    metadata=Metadata(version="1.3.0"),
+    time=datetime.now(),
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(
+        title="PCI DSS Compliance Violation",
+        desc="Credit card data stored without encryption"
+    )
+)
+
+# Create a detection finding  
+detection_finding = DetectionFinding(
+    metadata=Metadata(version="1.3.0"),
+    time=datetime.now(),
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(
+        title="Malware Detection",
+        desc="Suspicious file behavior detected"
+    )
+)
+```
 
 ### CLI Framework
 

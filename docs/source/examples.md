@@ -1,6 +1,271 @@
 # Examples
 
-This section provides practical examples of using Horizon Core's components including secure logging and CLI framework functionality.
+This section provides practical examples of using Horizon Core's components including secure logging, CLI framework functionality, and OCSF models for security event reporting.
+
+## OCSF Models
+
+### Basic Vulnerability Finding
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    VulnerabilityFinding,
+    Vulnerability,
+    CVE,
+    CVSS,
+    Severity,
+    SeverityID,
+    Status,
+    StatusID,
+    Metadata
+)
+from datetime import datetime
+
+# Create a basic vulnerability finding
+finding = VulnerabilityFinding(
+    metadata=Metadata(
+        version="1.3.0",
+        product={"name": "HorizonSec Scanner", "version": "2.0.0"}
+    ),
+    time=datetime.now(),
+    severity_id=SeverityID.HIGH,
+    severity=Severity.HIGH,
+    status_id=StatusID.NEW,
+    status=Status.NEW,
+    vulnerabilities=[
+        Vulnerability(
+            title="SQL Injection in User Login",
+            desc="User input is not properly sanitized in the login form",
+            cve=CVE(uid="CVE-2024-12345"),
+            cvss=CVSS(
+                version="3.1",
+                base_score=9.8,
+                vector_string="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+            )
+        )
+    ]
+)
+
+# Convert to dictionary for JSON serialization
+finding_dict = finding.to_dict()
+print(f"Vulnerability finding: {finding_dict}")
+```
+
+### Compliance Finding
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    ComplianceFinding,
+    FindingInfo,
+    ActivityID,
+    Metadata
+)
+from datetime import datetime
+
+# Create a compliance finding
+compliance_finding = ComplianceFinding(
+    metadata=Metadata(version="1.3.0"),
+    time=datetime.now(),
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(
+        title="PCI DSS Compliance Violation",
+        desc="Credit card data stored in plain text without encryption",
+        uid="COMP-2024-001"
+    ),
+    compliance={
+        "requirements": ["PCI DSS 3.2.1 Requirement 3.4"],
+        "controls": ["Data Protection"],
+        "status": "Non-Compliant"
+    }
+)
+
+print(f"Compliance finding: {compliance_finding.to_dict()}")
+```
+
+### Detection Finding
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    DetectionFinding,
+    FindingInfo,
+    ActivityID,
+    Metadata,
+    File,
+    User
+)
+from datetime import datetime
+
+# Create a detection finding
+detection_finding = DetectionFinding(
+    metadata=Metadata(version="1.3.0"),
+    time=datetime.now(),
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(
+        title="Malicious File Detected",
+        desc="Suspicious executable detected in user directory"
+    ),
+    resources=[
+        File(
+            name="malicious.exe",
+            path="/home/user/downloads/malicious.exe",
+            size=1024000,
+            hashes={
+                "MD5": "5d41402abc4b2a76b9719d911017c592",
+                "SHA256": "e3b0c44298fc1c149afbf4c8996fb924"
+            }
+        )
+    ],
+    actor=User(
+        name="suspicious_user",
+        uid="1001"
+    )
+)
+
+print(f"Detection finding: {detection_finding.to_dict()}")
+```
+
+### Complex Vulnerability with Affected Packages
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    VulnerabilityFinding,
+    Vulnerability,
+    AffectedPackage,
+    CVE,
+    CVSS,
+    CWE,
+    Metadata
+)
+from datetime import datetime
+
+# Create a complex vulnerability finding with affected packages
+complex_finding = VulnerabilityFinding(
+    metadata=Metadata(version="1.3.0"),
+    time=datetime.now(),
+    vulnerabilities=[
+        Vulnerability(
+            title="Remote Code Execution in OpenSSL",
+            desc="Buffer overflow vulnerability allows remote code execution",
+            cve=CVE(
+                uid="CVE-2024-67890",
+                cvss=CVSS(
+                    version="3.1",
+                    base_score=9.8,
+                    vector_string="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+                )
+            ),
+            cwe=CWE(
+                uid="CWE-120",
+                caption="Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')"
+            ),
+            affected_packages=[
+                AffectedPackage(
+                    name="openssl",
+                    version="1.1.1k",
+                    architecture="x86_64",
+                    package_manager="apt"
+                ),
+                AffectedPackage(
+                    name="libssl1.1",
+                    version="1.1.1k-1ubuntu1.2",
+                    architecture="x86_64",
+                    package_manager="apt"
+                )
+            ]
+        )
+    ]
+)
+
+print(f"Complex vulnerability: {complex_finding.to_dict()}")
+```
+
+### Real-World Security Scanner Integration
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    VulnerabilityFinding,
+    Vulnerability,
+    CVE,
+    CVSS,
+    Metadata,
+    SeverityID,
+    StatusID
+)
+from datetime import datetime
+import json
+
+class SecurityScanner:
+    """Example security scanner using OCSF models."""
+    
+    def __init__(self, scanner_name: str, version: str):
+        self.scanner_name = scanner_name
+        self.version = version
+    
+    def create_vulnerability_report(self, scan_results: dict) -> VulnerabilityFinding:
+        """Convert scan results to OCSF vulnerability finding."""
+        
+        vulnerabilities = []
+        for vuln_data in scan_results.get('vulnerabilities', []):
+            vulnerability = Vulnerability(
+                title=vuln_data['title'],
+                desc=vuln_data['description'],
+                cve=CVE(uid=vuln_data['cve_id']) if vuln_data.get('cve_id') else None,
+                cvss=CVSS(
+                    version=vuln_data['cvss']['version'],
+                    base_score=vuln_data['cvss']['score'],
+                    vector_string=vuln_data['cvss']['vector']
+                ) if vuln_data.get('cvss') else None
+            )
+            vulnerabilities.append(vulnerability)
+        
+        finding = VulnerabilityFinding(
+            metadata=Metadata(
+                version="1.3.0",
+                product={
+                    "name": self.scanner_name,
+                    "version": self.version
+                }
+            ),
+            time=datetime.now(),
+            severity_id=SeverityID(scan_results.get('severity_id', 1)),
+            status_id=StatusID.NEW,
+            vulnerabilities=vulnerabilities
+        )
+        
+        return finding
+    
+    def export_findings(self, findings: list, filename: str):
+        """Export findings to JSON file."""
+        findings_data = [finding.to_dict() for finding in findings]
+        
+        with open(filename, 'w') as f:
+            json.dump(findings_data, f, indent=2, default=str)
+        
+        print(f"Exported {len(findings)} findings to {filename}")
+
+# Usage example
+scanner = SecurityScanner("HorizonSec Scanner", "2.0.0")
+
+# Example scan results
+scan_data = {
+    "severity_id": 4,  # High severity
+    "vulnerabilities": [
+        {
+            "title": "Cross-Site Scripting (XSS)",
+            "description": "Reflected XSS vulnerability in search parameter",
+            "cve_id": "CVE-2024-11111",
+            "cvss": {
+                "version": "3.1",
+                "score": 6.1,
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+            }
+        }
+    ]
+}
+
+# Create and export findings
+finding = scanner.create_vulnerability_report(scan_data)
+scanner.export_findings([finding], "security_report.json")
+```
 
 ## Secure Logging
 
