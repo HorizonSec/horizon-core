@@ -134,7 +134,7 @@ finding = VulnerabilityFinding(
         product={"name": "HorizonSec Scanner", "version": "2.0.0"}
     ),
     time=datetime.now(),
-    type_uid=1001,  # Required: OCSF type identifier for vulnerability findings
+    type_uid=200201,  # Required: OCSF type identifier for vulnerability finding CREATE
     activity_id=ActivityID.CREATE,  # Required: Activity being performed
     severity_id=SeverityID.HIGH,
     severity=Severity.HIGH,
