@@ -1,7 +1,7 @@
 """
-Unit tests for OCSF vulnerability objects module.
+Unit tests for OCSF common objects module.
 
-Tests vulnerability-related objects like CWE, CVSS, CVE, AffectedPackage, and Vulnerability.
+Tests common vulnerability-related objects like CWE, CVSS, and CVE.
 """
 
 import unittest
