@@ -15,10 +15,8 @@ from horizon_core.reporting.models.ocsf.events import (
     VulnerabilityFinding,
 )
 from horizon_core.reporting.models.ocsf.finding_objects import FindingInfo
+from horizon_core.reporting.models.ocsf.common import CVE, CVSS, CWE
 from horizon_core.reporting.models.ocsf.vulnerability_objects import (
-    CVE,
-    CVSS,
-    CWE,
     AffectedPackage,
     Vulnerability,
 )
