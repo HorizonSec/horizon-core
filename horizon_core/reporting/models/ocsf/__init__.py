@@ -9,6 +9,11 @@ from .base_objects import (
     Metadata,
     User,
 )
+from .common import (
+    CVE,
+    CVSS,
+    CWE,
+)
 from .enums import (
     ActivityID,
     Confidence,
@@ -27,9 +32,6 @@ from .finding_objects import (
     FindingInfo,
 )
 from .vulnerability_objects import (
-    CVE,
-    CVSS,
-    CWE,
     AffectedPackage,
     Vulnerability,
 )
