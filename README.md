@@ -177,10 +177,11 @@ from horizon_core.reporting.models.ocsf import (
 compliance_finding = ComplianceFinding(
     metadata=Metadata(version="1.3.0"),
     time=datetime.now(),
-    type_uid=2001,  # Required: OCSF type identifier for compliance findings
+    type_uid=200301,  # Required: OCSF type identifier for compliance finding CREATE
     activity_id=ActivityID.CREATE,
     severity_id=SeverityID.MEDIUM,
     finding_info=FindingInfo(
+        uid="comp-001",  # For compliance finding
         title="PCI DSS Compliance Violation",
         desc="Credit card data stored without encryption"
     )
@@ -190,10 +191,11 @@ compliance_finding = ComplianceFinding(
 detection_finding = DetectionFinding(
     metadata=Metadata(version="1.3.0"),
     time=datetime.now(),
-    type_uid=2004,  # Required: OCSF type identifier for detection findings
+    type_uid=200401,  # Required: OCSF type identifier for detection finding CREATE
     activity_id=ActivityID.CREATE,
     severity_id=SeverityID.HIGH,
     finding_info=FindingInfo(
+        uid="detect-001",  # For detection finding
         title="Malware Detection",
         desc="Suspicious file behavior detected"
     )
