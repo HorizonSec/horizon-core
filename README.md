@@ -141,6 +141,7 @@ finding = VulnerabilityFinding(
     status_id=StatusID.NEW,
     status=Status.NEW,
     finding_info=FindingInfo(  # Required: Core finding information
+        uid="vuln-001",  # Required unique identifier
         title="Critical SQL Injection Vulnerability",
         desc="SQL injection vulnerability detected in user login form"
     ),
