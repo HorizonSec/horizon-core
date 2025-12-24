@@ -38,12 +38,12 @@ Example Usage:
         python -m unittest tests.test_config.TestConfigLoader.test_invalid_json_syntax_raises_jsondecodeerror
 """
 
-import os
 import json
+import os
 import unittest
 from pathlib import Path
 
-from horizon_core.config import load_config, Config
+from horizon_core.config import Config, load_config
 
 
 class TestConfigLoader(unittest.TestCase):
@@ -72,7 +72,6 @@ class TestConfigLoader(unittest.TestCase):
     def tearDown(self):
         """Restore the original working directory after each test."""
         os.chdir(self._orig_cwd)
-
 
     def test_valid_full_config_loads(self):
         """

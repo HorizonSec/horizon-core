@@ -33,9 +33,7 @@ class CLIWrapper:
         self.console = Console()
 
         # Initialize typer app
-        self.app = typer.Typer(
-            name=app_name, help=app_description, add_completion=True, rich_markup_mode="rich"
-        )
+        self.app = typer.Typer(name=app_name, help=app_description, add_completion=True, rich_markup_mode="rich")
 
         # Add standard commands
         self._add_standard_commands()
@@ -50,10 +48,7 @@ class CLIWrapper:
         def version():  # type: ignore
             """Show version information."""
             self._show_banner()
-            rprint(
-                f"[bold green]{self.app_name}[/bold green]"
-                + f" version [bold blue]{self.version}[/bold blue]"
-            )
+            rprint(f"[bold green]{self.app_name}[/bold green]" + f" version [bold blue]{self.version}[/bold blue]")
 
         @self.app.command()
         def interactive():  # type: ignore
@@ -173,9 +168,7 @@ class CLIWrapper:
 
         # If no arguments provided, show banner and help
         if not args:
-            rprint(
-                "[dim]Use --help for available commands or 'interactive' for guided mode[/dim]\n"
-            )
+            rprint("[dim]Use --help for available commands or 'interactive' for guided mode[/dim]\n")
 
         try:
             self.app()
@@ -208,6 +201,4 @@ def create_cli(
     Returns:
         CLI instance ready for use
     """
-    return CLIWrapper(
-        app_name=app_name, app_description=app_description, version=version, ascii_art=ascii_art
-    )
+    return CLIWrapper(app_name=app_name, app_description=app_description, version=version, ascii_art=ascii_art)

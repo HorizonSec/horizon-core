@@ -56,9 +56,7 @@ class TestCLI(unittest.TestCase):
 
     @patch("horizon_core.cli_wrapper.figlet_format")
     @patch("horizon_core.cli_wrapper.Console")
-    def test_show_banner_with_figlet(
-        self, mock_console: "MagicMock", mock_figlet: "MagicMock"
-    ) -> None:
+    def test_show_banner_with_figlet(self, mock_console: "MagicMock", mock_figlet: "MagicMock") -> None:
         """Test banner display with figlet-generated ASCII art."""
         mock_console_instance = Mock()
         mock_console.return_value = mock_console_instance
@@ -72,9 +70,7 @@ class TestCLI(unittest.TestCase):
 
     @patch("horizon_core.cli_wrapper.figlet_format")
     @patch("horizon_core.cli_wrapper.Console")
-    def test_show_banner_figlet_exception(
-        self, mock_console: "MagicMock", mock_figlet: "MagicMock"
-    ) -> None:
+    def test_show_banner_figlet_exception(self, mock_console: "MagicMock", mock_figlet: "MagicMock") -> None:
         """Test banner display when figlet raises an exception."""
         mock_console_instance = Mock()
         mock_console.return_value = mock_console_instance

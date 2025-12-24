@@ -65,17 +65,11 @@ class Rules:
 
     def __post_init__(self) -> None:
         if not isinstance(self.enable_email_alerts, bool):
-            raise TypeError(
-                f"'enable_email_alerts' must be bool, got {type(self.enable_email_alerts).__name__}"
-            )
+            raise TypeError(f"'enable_email_alerts' must be bool, got {type(self.enable_email_alerts).__name__}")
         if not isinstance(self.enable_sms_alerts, bool):
-            raise TypeError(
-                f"'enable_sms_alerts' must be bool, got {type(self.enable_sms_alerts).__name__}"
-            )
+            raise TypeError(f"'enable_sms_alerts' must be bool, got {type(self.enable_sms_alerts).__name__}")
         if not isinstance(self.enable_web_hooks, bool):
-            raise TypeError(
-                f"'enable_web_hooks' must be bool, got {type(self.enable_web_hooks).__name__}"
-            )
+            raise TypeError(f"'enable_web_hooks' must be bool, got {type(self.enable_web_hooks).__name__}")
         if not isinstance(self.allow_margin_trading, bool):
             type_ = type(self.allow_margin_trading)
             raise TypeError(f"'allow_margin_trading' must be bool, got {type_.__name__}")
@@ -89,15 +83,11 @@ class Config:
 
     def __post_init__(self) -> None:
         if not isinstance(self.risk_appetite, RiskAppetite):
-            raise TypeError(
-                f"'risk_appetite' must be RiskAppetite, got {type(self.risk_appetite).__name__}"
-            )
+            raise TypeError(f"'risk_appetite' must be RiskAppetite, got {type(self.risk_appetite).__name__}")
         if not isinstance(self.rules, Rules):
             raise TypeError(f"'rules' must be Rules, got {type(self.rules).__name__}")
         if not isinstance(self.opt_in_features, list):
-            raise TypeError(
-                f"'opt_in_features' must be list, got {type(self.opt_in_features).__name__}"
-            )
+            raise TypeError(f"'opt_in_features' must be list, got {type(self.opt_in_features).__name__}")
         if not all(isinstance(item, str) for item in self.opt_in_features):
             raise TypeError("All items in 'opt_in_features' must be str")
 

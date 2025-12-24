@@ -1,6 +1,274 @@
 # Examples
 
-This section provides practical examples of using Horizon Core's components including secure logging and CLI framework functionality.
+This section provides practical examples of using Horizon Core's components including secure logging, CLI framework functionality, and OCSF models for security event reporting.
+
+## OCSF Models
+
+### Basic Vulnerability Finding
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    VulnerabilityFinding,
+    Vulnerability,
+    CVE,
+    CVSS,
+    Severity,
+    SeverityID,
+    Status,
+    StatusID,
+    Metadata,
+    ActivityID,
+    FindingInfo
+)
+from datetime import datetime
+from dataclasses import asdict
+
+# Create a basic vulnerability finding
+finding = VulnerabilityFinding(
+    metadata=Metadata(
+        version="1.3.0",
+        product={"name": "HorizonSec Scanner", "version": "2.0.0"}
+    ),
+    time=datetime.now(),
+    severity_id=SeverityID.HIGH,
+    type_uid=200201,  # Vulnerability Finding Create
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(uid="vuln-001"),
+    severity=Severity.HIGH,
+    status_id=StatusID.NEW,
+    status=Status.NEW,
+    vulnerabilities=[
+        Vulnerability(
+            title="SQL Injection in User Login",
+            desc="User input is not properly sanitized in the login form",
+            cve=CVE(uid="CVE-2024-12345"),
+            cvss=CVSS(
+                version="3.1",
+                base_score=9.8,
+                vector_string="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+            )
+        )
+    ]
+)
+
+# Convert to dictionary for JSON serialization
+finding_dict = asdict(finding)
+print(f"Vulnerability finding: {finding_dict}")
+```
+
+### Compliance Finding
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    ComplianceFinding,
+    FindingInfo,
+    ActivityID,
+    SeverityID,
+    Metadata
+)
+from datetime import datetime
+from dataclasses import asdict
+
+# Create a compliance finding
+compliance_finding = ComplianceFinding(
+    metadata=Metadata(version="1.3.0"),
+    severity_id=SeverityID.MEDIUM,
+    time=datetime.now(),
+    type_uid=200301,  # Compliance Finding Create
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(
+        title="PCI DSS Compliance Violation",
+        desc="Credit card data stored in plain text without encryption",
+        uid="COMP-2024-001"
+    )
+)
+
+print(f"Compliance finding: {asdict(compliance_finding)}")
+```
+
+### Detection Finding
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    DetectionFinding,
+    FindingInfo,
+    ActivityID,
+    SeverityID,
+    Metadata
+)
+from datetime import datetime
+from dataclasses import asdict
+
+# Create a detection finding
+detection_finding = DetectionFinding(
+    metadata=Metadata(version="1.3.0"),
+    severity_id=SeverityID.HIGH,
+    time=datetime.now(),
+    type_uid=200401,  # Detection Finding Create
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(
+        title="Malicious File Detected",
+        desc="Suspicious executable detected in user directory"
+    )
+)
+
+print(f"Detection finding: {asdict(detection_finding)}")
+```
+
+### Complex Vulnerability with Affected Packages
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    VulnerabilityFinding,
+    Vulnerability,
+    AffectedPackage,
+    CVE,
+    CVSS,
+    CWE,
+    Metadata,
+    ActivityID,
+    SeverityID,
+    FindingInfo
+)
+from datetime import datetime
+from dataclasses import asdict
+
+# Create a complex vulnerability finding with affected packages
+complex_finding = VulnerabilityFinding(
+    metadata=Metadata(version="1.3.0"),
+    time=datetime.now(),
+    severity_id=SeverityID.CRITICAL,
+    type_uid=200201,  # Vulnerability Finding Create
+    activity_id=ActivityID.CREATE,
+    finding_info=FindingInfo(uid="complex-vuln-001"),
+    vulnerabilities=[
+        Vulnerability(
+            title="Remote Code Execution in OpenSSL",
+            desc="Buffer overflow vulnerability allows remote code execution",
+            cve=CVE(
+                uid="CVE-2024-67890",
+                cvss=CVSS(
+                    version="3.1",
+                    base_score=9.8,
+                    vector_string="CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+                )
+            ),
+            cwe=CWE(
+                uid="CWE-120",
+                caption="Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')"
+            ),
+            affected_packages=[
+                AffectedPackage(
+                    name="openssl",
+                    version="1.1.1k",
+                    architecture="x86_64"
+                ),
+                AffectedPackage(
+                    name="libssl1.1",
+                    version="1.1.1k-1ubuntu1.2",
+                    architecture="x86_64"
+                )
+            ]
+        )
+    ]
+)
+
+print(f"Complex vulnerability: {asdict(complex_finding)}")
+```
+
+### Real-World Security Scanner Integration
+
+```python
+from horizon_core.reporting.models.ocsf import (
+    VulnerabilityFinding,
+    Vulnerability,
+    CVE,
+    CVSS,
+    Metadata,
+    SeverityID,
+    StatusID,
+    ActivityID,
+    FindingInfo
+)
+from datetime import datetime
+from dataclasses import asdict
+import json
+
+class SecurityScanner:
+    """Example security scanner using OCSF models."""
+    
+    def __init__(self, scanner_name: str, version: str):
+        self.scanner_name = scanner_name
+        self.version = version
+    
+    def create_vulnerability_report(self, scan_results: dict) -> VulnerabilityFinding:
+        """Convert scan results to OCSF vulnerability finding."""
+        
+        vulnerabilities = []
+        for vuln_data in scan_results.get('vulnerabilities', []):
+            vulnerability = Vulnerability(
+                title=vuln_data['title'],
+                desc=vuln_data['description'],
+                cve=CVE(uid=vuln_data['cve_id']) if vuln_data.get('cve_id') else None,
+                cvss=CVSS(
+                    version=vuln_data['cvss']['version'],
+                    base_score=vuln_data['cvss']['score'],
+                    vector_string=vuln_data['cvss']['vector']
+                ) if vuln_data.get('cvss') else None
+            )
+            vulnerabilities.append(vulnerability)
+        
+        finding = VulnerabilityFinding(
+            metadata=Metadata(
+                version="1.3.0",
+                product={
+                    "name": self.scanner_name,
+                    "version": self.version
+                }
+            ),
+            time=datetime.now(),
+            severity_id=SeverityID(scan_results.get('severity_id', 1)),
+            type_uid=200201,  # Vulnerability Finding Create
+            activity_id=ActivityID.CREATE,
+            finding_info=FindingInfo(uid=f"scan-{datetime.now().timestamp()}"),
+            vulnerabilities=vulnerabilities
+        )
+        
+        return finding
+    
+    def export_findings(self, findings: list, filename: str):
+        """Export findings to JSON file."""
+        findings_data = [asdict(finding) for finding in findings]
+        
+        with open(filename, 'w') as f:
+            json.dump(findings_data, f, indent=2, default=str)
+        
+        print(f"Exported {len(findings)} findings to {filename}")
+
+# Usage example
+scanner = SecurityScanner("HorizonSec Scanner", "2.0.0")
+
+# Example scan results
+scan_data = {
+    "severity_id": 4,  # High severity
+    "vulnerabilities": [
+        {
+            "title": "Cross-Site Scripting (XSS)",
+            "description": "Reflected XSS vulnerability in search parameter",
+            "cve_id": "CVE-2024-11111",
+            "cvss": {
+                "version": "3.1",
+                "score": 6.1,
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+            }
+        }
+    ]
+}
+
+# Create and export findings
+finding = scanner.create_vulnerability_report(scan_data)
+scanner.export_findings([finding], "security_report.json")
+```
 
 ## Secure Logging
 

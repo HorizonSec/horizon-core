@@ -35,12 +35,50 @@ Configuration management utilities for horizon-core applications.
    :show-inheritance:
 ```
 
-## horizon_core.sarif
+## horizon_core.reporting.models.ocsf
 
-SARIF (Static Analysis Results Interchange Format) schema definitions and utilities.
+OCSF (Open Cybersecurity Schema Framework) data models for structured security event reporting.
+
+### Base Objects
 
 ```{eval-rst}
-.. automodule:: horizon_core.sarif
+.. automodule:: horizon_core.reporting.models.ocsf.base_objects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+### Enumerations
+
+```{eval-rst}
+.. automodule:: horizon_core.reporting.models.ocsf.enums
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+### Event Classes
+
+```{eval-rst}
+.. automodule:: horizon_core.reporting.models.ocsf.events
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+### Finding Objects
+
+```{eval-rst}
+.. automodule:: horizon_core.reporting.models.ocsf.finding_objects
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+### Vulnerability Objects
+
+```{eval-rst}
+.. automodule:: horizon_core.reporting.models.ocsf.vulnerability_objects
    :members:
    :undoc-members:
    :show-inheritance:
